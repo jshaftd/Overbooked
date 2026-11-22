@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Overbooked</title>
+	<!-- The DOM UI layer (menus, preferences, save/load, pause) is styled here.
+	     It is a separate, runtime-editable file, like theme.lor: editing it does
+	     not need a recompile, only an app restart. -->
+	<link rel="stylesheet" href="theme.css"/>
+	<style>
+		* { box-sizing: border-box; }
+		html, body {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			background: #15151c;
+			color: #e8e8f0;
+			/* The @font-face declarations for this family live in theme.css. */
+			font-family: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+			overflow: hidden;
+		}
+		#app { position: relative; width: 100vw; height: 100vh; }
+		#pixi-mount { position: absolute; inset: 0; }
+		#pixi-mount canvas { display: block; }
+
+		/* Text field for `ask` prompts. Pixi has no text input primitive, so the
+		   browser's own <input> sits over the row PlayerView reserves in the
+		   dialogue box; the two are kept aligned through the world transform.
+		   The field has no box of its own - it is text on the dialogue box's
+		   own background, set flush with the request line above it - so the
+		   element is only ever the text and the browser's caret. The overlay
+		   itself is transparent to the pointer, so wheel scrolling (rollback)
+		   still reaches the canvas underneath. */
+		#prompt-overlay {
+			position: absolute;
+			inset: 0;
+			display: none;
+			pointer-events: none;
+			z-index: 4;
+		}
+		#prompt-input {
+			position: absolute;
+			display: block;
+			pointer-events: auto;
+			margin: 0;
+			border: none;
+			outline: none;
+			background: transparent;
+			caret-color: currentColor;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: clip;
+		}
+
+		/* DOM overlay for the script editor (Pixi can't do good multiline text editing) */
+	#editor-overlay {
+		position: absolute;
+		inset: 0;
+		display: none;
+		flex-direction: column;
+		background: rgba(21, 28, 28, 0.75);
+	}
+		#editor-overlay.active { display: flex; }
+
+		/* Toolbar shown while playing (DOM overlay for the Stop control) */
+	#play-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		display: none;
+		padding: 8px;
+		background: rgba(32, 32, 44, 0.75);
+		border-bottom: 1px solid #333;
+		align-items: center;
+		z-index: 5;
+		/* The bar is chrome, not a surface: only its buttons (and its menu-mode
+		   variant keeps just the developer ones) should catch a click. Otherwise
+		   it swallows clicks on the top strip of the canvas and of the pause
+		   overlay's sidebar beneath it. */
+		pointer-events: none;
+	}
+		#play-overlay.active { display: flex; }
+		/* The start menu keeps the toolbar for its developer panels but has no
+		   playback session to stop. */
+		#play-overlay.menu #btn-stop { display: none; }
+		#play-overlay button {
+			background: #5a2a2a;
+			color: #e8e8f0;
+			border: 1px solid #7a4a4a;
+			margin-left: 10px;
+			padding: 6px 12px;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 13px;
+			pointer-events: auto;
+		}
+		#play-overlay button:hover { background: #7a3a3a; }
+		#play-overlay .spacer { flex: 1; }
+		#play-overlay .title { font-size: 13px; color: #aaa; }
+		#editor-toolbar {
+			display: flex;
+			gap: 8px;
+			padding: 8px;
+			background: #20202c;
+			border-bottom: 1px solid #333;
+			align-items: center;
+		}
+		#editor-toolbar button {
+			background: #3a3a52;
+			color: #e8e8f0;
+			border: 1px solid #4a4a66;
+			padding: 6px 12px;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 13px;
+		}
+		#editor-toolbar button:hover { background: #4a4a66; }
+		#editor-toolbar .spacer { flex: 1; }
+		#script-editor {
+			flex: 1;
+			width: 100%;
+			border: none;
+			outline: none;
+			resize: none;
+			padding: 12px;
+			background: #1a1a24;
+			color: #d8d8e8;
+			font-family: "Consolas", "Courier New", monospace;
+			font-size: 14px;
+			line-height: 1.5;
+			tab-size: 2;
+		}
+	#status-bar {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding: 4px 12px;
+		font-size: 12px;
+		color: #999;
+		background: rgba(32, 32, 44, 0.75);
+		border-top: 1px solid #333;
+		min-height: 22px;
+		z-index: 10;
+	}
+		#status-bar.error { color: #ff8080; }
+
+		/* Developer-only variable inspector (gated by config.lor's
+		   developerMode, like the play toolbar and the status bar). Built and
+		   driven by drift.ui.DevPanel; the markup below is the static shell, the
+		   target dropdown and the variable rows are filled in at runtime. It
+		   sits above the play toolbar and below the status bar, is
+		   pointer-interactive (unlike the game's #ui-overlay), and is dragged by
+		   its title bar. The beat jumper beside it (drift.ui.BeatPanel) shares
+		   this shell's look, with its own list instead of a dropdown. */
+	#dev-panel, #beat-panel {
+		position: fixed;
+		display: flex;
+		flex-direction: column;
+		background: rgba(20, 20, 30, 0.94);
+		border: 1px solid #4a4a66;
+		border-radius: 6px;
+		box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+		z-index: 7;
+		font-size: 13px;
+		overflow: hidden;
+	}
+	#dev-panel {
+		top: 56px;
+		right: 16px;
+		width: 320px;
+		max-height: 70vh;
+	}
+	#beat-panel {
+		top: 56px;
+		left: 16px;
+		width: 360px;
+		max-height: 78vh;
+	}
+		#dev-panel-bar, #beat-panel-bar {
+			display: flex;
+			align-items: center;
+			padding: 6px 10px;
+			background: #2a2a44;
+			border-bottom: 1px solid #4a4a66;
+			cursor: move;
+			user-select: none;
+			-webkit-user-select: none;
+			touch-action: none;
+		}
+		#dev-panel-bar .dev-panel-title,
+		#beat-panel-bar .dev-panel-title { font-weight: 600; color: #d8d8e8; }
+		#dev-panel-body, #beat-panel-body {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			padding: 10px;
+			overflow: hidden;
+		}
+		#dev-character-select, #beat-filter {
+			width: 100%;
+			padding: 4px 6px;
+			background: #1a1a24;
+			color: #e8e8f0;
+			border: 1px solid #4a4a66;
+			border-radius: 4px;
+			font: inherit;
+		}
+		#dev-panel-rows {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+			overflow-y: auto;
+			max-height: 56vh;
+		}
+		#beat-list {
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+			overflow-y: auto;
+			max-height: 64vh;
+		}
+		.beat-file {
+			display: flex;
+			align-items: baseline;
+			justify-content: space-between;
+			margin-top: 8px;
+			padding: 2px 4px;
+			color: #b89fff;
+			font-weight: 600;
+			border-bottom: 1px solid #33334a;
+		}
+		.beat-file:first-child { margin-top: 0; }
+		.beat-count { color: #77778c; font-size: 11px; font-weight: 400; }
+		.beat-btn {
+			flex: none;
+			padding: 3px 8px;
+			background: transparent;
+			color: #d8d8e8;
+			border: none;
+			border-radius: 3px;
+			cursor: pointer;
+			font: inherit;
+			text-align: left;
+		}
+		.beat-btn:hover { background: #3a3a52; }
+		.beat-btn[disabled] { color: #77778c; cursor: default; }
+		.beat-btn[disabled]:hover { background: transparent; }
+		/* The beat the running session is in. The left rule survives the row's
+		   hover background; the glyph makes it readable without colour alone. */
+		.beat-btn.current {
+			background: #43335f;
+			color: #fff;
+			box-shadow: inset 3px 0 0 #ffb6c1;
+		}
+		.beat-btn.current::before { content: "▶ "; color: #ffb6c1; font-size: 10px; }
+		.beat-btn.current:hover { background: #4d3b6e; }
+		.beat-args { margin-left: 6px; color: #77778c; font-size: 11px; }
+		.dev-row {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+		.dev-var {
+			flex: 0 0 84px;
+			color: #9a9ab0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.dev-value {
+			flex: 1;
+			text-align: right;
+			color: #f0f0ff;
+		}
+		.dev-input {
+			flex: 1;
+			min-width: 0;
+			padding: 3px 6px;
+			background: #1a1a24;
+			color: #e8e8f0;
+			border: 1px solid #4a4a66;
+			border-radius: 4px;
+			font: inherit;
+		}
+		.dev-check {
+			flex: none;
+			margin-left: auto;
+			width: 18px;
+			height: 18px;
+			cursor: pointer;
+			accent-color: #b89fff;
+		}
+		.dev-btn {
+			flex: none;
+			min-width: 28px;
+			padding: 3px 8px;
+			background: #3a3a52;
+			color: #e8e8f0;
+			border: 1px solid #4a4a66;
+			border-radius: 4px;
+			cursor: pointer;
+			font: inherit;
+		}
+		.dev-btn:hover { background: #4a4a66; }
+		/* A global listed in the story's `dev_readonly` state map: visible,
+		   but with no control that could write it. */
+		.dev-row[data-readonly="true"] .dev-var,
+		.dev-row[data-readonly="true"] .dev-value { color: #8a8a9e; }
+		.dev-row[data-readonly="true"] .dev-input {
+			color: #8a8a9e;
+			background: #15151e;
+			cursor: default;
+		}
+		.dev-row[data-readonly="true"] .dev-check { cursor: default; opacity: .55; }
+		.dev-ro {
+			flex: none;
+			color: #77778c;
+			font-size: 11px;
+			font-style: italic;
+		}
+		.dev-empty { color: #777; font-style: italic; }
+	</style>
+</head>
+<body>
+	<div id="app">
+		<div id="pixi-mount"></div>
+		<!-- Game menus (boot / start / config / save-load / pause) are DOM here,
+		     above the canvas. The dialogue box, choice list and stage text stay
+		     on the canvas. Styled by theme.css. -->
+		<div id="ui-overlay"></div>
+		<div id="prompt-overlay"><input id="prompt-input" type="text" spellcheck="false" autocomplete="off" autocapitalize="off"/></div>
+		<div id="play-overlay">
+			<span class="title">Playing</span>
+			<span class="spacer"></span>
+			<button id="btn-dev-beats">Beats</button>
+			<button id="btn-dev-vars">Variables</button>
+			<button id="btn-stop">■ Stop</button>
+		</div>
+		<div id="editor-overlay">
+			<div id="editor-toolbar">
+				<button id="btn-play">▶ Play</button>
+				<button id="btn-open">Open Project</button>
+				<button id="btn-save">Save Project</button>
+				<span class="spacer"></span>
+				<span style="font-size:13px;color:#aaa;">Script (.lor)</span>
+			</div>
+			<textarea id="script-editor" spellcheck="false"></textarea>
+		</div>
+		<div id="status-bar">Ready.</div>
+		<!-- Developer-only variable inspector. Hidden unless config.lor's
+		     developerMode is on; filled in by drift.ui.DevPanel. The bar is the
+		     drag handle. Opened by the play toolbar's "Variables" button or F2,
+		     and closed by the same; it is not shown until then so it never sits
+		     over the stage (and the pixel tests) unasked. -->
+		<div id="dev-panel" style="display: none;">
+			<div id="dev-panel-bar"><span class="dev-panel-title">Variables</span></div>
+			<div id="dev-panel-body">
+				<select id="dev-character-select"></select>
+				<div id="dev-panel-rows"></div>
+			</div>
+		</div>
+		<!-- Developer-only beat jumper. Same gating as the variable panel (F3 or
+		     the play toolbar's "Beats" button); lists every loaded `.lor` file
+		     with its top-level beats and starts the story at the one clicked. -->
+		<div id="beat-panel" style="display: none;">
+			<div id="beat-panel-bar"><span class="dev-panel-title">Beats</span></div>
+			<div id="beat-panel-body">
+				<input id="beat-filter" type="text" placeholder="Filter beats…" spellcheck="false" autocomplete="off"/>
+				<div id="beat-list"></div>
+			</div>
+		</div>
+	</div>
+
+	<!--
+		The DOM UI layer's markup: one <template> per screen. These are inert
+		(they render nothing on their own); DomUi clones each one into
+		#ui-overlay once at mount and thereafter only toggles `.active` and fills
+		the data regions (the save grid, the history list, the preference
+		readouts). Edit the structure here, the look in theme.css - neither needs
+		a recompile.
+
+		Buttons carry their intent as data attributes so no selector logic lives
+		in the markup:
+		  data-action  new-game | open-load | open-config | quit
+		               | close-config | close-saveload     (wired to the handlers)
+		  data-nav     pause sidebar panes                 (wired to DomUi)
+
+		An element with no data-action is inert: wireActions never sees it, so it
+		still hovers and focuses but does nothing. That is how Extras, Support the
+		Game and Notifications are spelled until they have somewhere to go.
+	-->
+
+	<template id="tpl-boot">
+		<section class="ui-screen" data-screen="boot">
+			<div class="ui-bg"></div>
+			<div class="ui-scrim"></div>
+			<div class="ui-body ui-body--boot">
+				<h1 class="ui-title">Tidal Drift</h1>
+				<p class="ui-boot-status">Loading…</p>
+			</div>
+		</section>
+	</template>
+
+	<template id="tpl-start">
+		<section class="ui-screen" data-screen="start">
+			<div class="ui-bg">
+				<!-- The start menu's backdrop is a looping clip; theme.css pins it
+				     over the still fallback. Its two paths come from the `menu`
+				     block in theme.lor, which DomUi applies here at mount - so the
+				     art is swapped in the config, not this markup. DomUi also plays
+				     the clip while this screen is active and pauses it when it is
+				     not, so it never keeps decoding behind another screen. -->
+				<video class="ui-bg-video" loop muted playsinline preload="auto" aria-hidden="true"></video>
+			</div>
+			<div class="ui-scrim"></div>
+			<div class="ui-body ui-body--start">
+				<aside class="ui-menu-panel">
+					<div class="ui-menu-logo" role="img" aria-label="Overbooked"></div>
+					<nav class="ui-menu">
+						<button type="button" class="ui-menu-item" data-action="new-game">
+							<span class="ui-menu-icon ui-menu-icon--house" aria-hidden="true"></span>
+							<span class="ui-menu-label">Start</span>
+						</button>
+						<button type="button" class="ui-menu-item" data-action="open-load">
+							<span class="ui-menu-icon ui-menu-icon--folder" aria-hidden="true"></span>
+							<span class="ui-menu-label">Load</span>
+						</button>
+						<button type="button" class="ui-menu-item">
+							<span class="ui-menu-icon ui-menu-icon--sparkles" aria-hidden="true"></span>
+							<span class="ui-menu-label">Extras</span>
+						</button>
+						<button type="button" class="ui-menu-item">
+							<span class="ui-menu-icon ui-menu-icon--heart" aria-hidden="true"></span>
+							<span class="ui-menu-label">Support the Game</span>
+						</button>
+						<div class="ui-menu-divider" role="separator"></div>
+						<button type="button" class="ui-menu-item" data-action="open-config">
+							<span class="ui-menu-icon ui-menu-icon--gear" aria-hidden="true"></span>
+							<span class="ui-menu-label">Preferences</span>
+						</button>
+						<button type="button" class="ui-menu-item">
+							<span class="ui-menu-icon ui-menu-icon--bell" aria-hidden="true"></span>
+							<span class="ui-menu-label">Notifications</span>
+						</button>
+						<button type="button" class="ui-menu-item" data-action="quit">
+							<span class="ui-menu-icon ui-menu-icon--power" aria-hidden="true"></span>
+							<span class="ui-menu-label">Quit</span>
+						</button>
+					</nav>
+				</aside>
+			</div>
+		</section>
+	</template>
+
+	<template id="tpl-config">
+		<section class="ui-screen" data-screen="config">
+			<div class="ui-bg"></div>
+			<div class="ui-scrim"></div>
+			<div class="ui-body ui-body--config">
+				<h1 class="ui-title">Preferences</h1>
+				<div class="ui-rows"></div>
+				<div class="ui-footer">
+					<button type="button" class="ui-btn" data-action="close-config">Back</button>
+				</div>
+			</div>
+		</section>
+	</template>
+
+	<template id="tpl-saveload">
+		<section class="ui-screen" data-screen="saveload">
+			<div class="ui-bg"></div>
+			<div class="ui-scrim"></div>
+			<div class="ui-body ui-body--saveload">
+				<h1 class="ui-title">Game</h1>
+				<div class="ui-grid"></div>
+				<div class="ui-pager"></div>
+				<div class="ui-footer">
+					<button type="button" class="ui-btn" data-action="close-saveload">Back</button>
+				</div>
+			</div>
+		</section>
+	</template>
+
+	<template id="tpl-pause">
+		<section class="ui-screen" data-screen="pause">
+			<div class="ui-bg"></div>
+			<div class="ui-scrim"></div>
+			<div class="ui-body ui-body--pause">
+				<aside class="ui-menu-panel ui-pause-sidebar">
+					<div class="ui-menu-logo" role="img" aria-label="Tidal Drift"></div>
+					<nav class="ui-menu ui-pause-menu">
+						<button type="button" class="ui-menu-item" data-nav="history">
+							<span class="ui-menu-icon ui-menu-icon--folder" aria-hidden="true"></span>
+							<span class="ui-menu-label">History</span>
+						</button>
+						<button type="button" class="ui-menu-item" data-nav="save">
+							<span class="ui-menu-icon ui-menu-icon--folder" aria-hidden="true"></span>
+							<span class="ui-menu-label">Save</span>
+						</button>
+						<button type="button" class="ui-menu-item" data-nav="load">
+							<span class="ui-menu-icon ui-menu-icon--folder" aria-hidden="true"></span>
+							<span class="ui-menu-label">Load</span>
+						</button>
+						<button type="button" class="ui-menu-item" data-nav="preferences">
+							<span class="ui-menu-icon ui-menu-icon--gear" aria-hidden="true"></span>
+							<span class="ui-menu-label">Preferences</span>
+						</button>
+						<button type="button" class="ui-menu-item">
+							<span class="ui-menu-icon ui-menu-icon--bell" aria-hidden="true"></span>
+							<span class="ui-menu-label">Notifications</span>
+						</button>
+						<button type="button" class="ui-menu-item" data-nav="main-menu">
+							<span class="ui-menu-icon ui-menu-icon--house" aria-hidden="true"></span>
+							<span class="ui-menu-label">Main Menu</span>
+						</button>
+						<button type="button" class="ui-menu-item" data-nav="quit">
+							<span class="ui-menu-icon ui-menu-icon--power" aria-hidden="true"></span>
+							<span class="ui-menu-label">Quit</span>
+						</button>
+						<button type="button" class="ui-menu-item ui-pause-return" data-nav="return">
+							<span class="ui-menu-label">Return</span>
+						</button>
+					</nav>
+				</aside>
+				<div class="ui-content">
+					<div class="ui-view" data-view="menu">
+						<h1 class="ui-title">Paused</h1>
+						<p class="ui-hint">Choose an option from the menu.</p>
+					</div>
+					<div class="ui-view" data-view="save">
+						<h1 class="ui-title">Save</h1>
+						<div class="ui-grid"></div>
+						<div class="ui-pager"></div>
+					</div>
+					<div class="ui-view" data-view="load">
+						<h1 class="ui-title">Load</h1>
+						<div class="ui-grid"></div>
+						<div class="ui-pager"></div>
+					</div>
+					<div class="ui-view" data-view="preferences">
+						<h1 class="ui-title">Preferences</h1>
+						<div class="ui-rows"></div>
+					</div>
+					<div class="ui-view" data-view="history">
+						<h1 class="ui-title">History</h1>
+						<div class="ui-history"></div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</template>
+
+	<script src="pixi.min.js"></script>
+		<script src="pixi-filters.js"></script>
+		<script src="app.js"></script>
+</body>
+</html>

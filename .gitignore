@@ -1,0 +1,17 @@
+node_modules/
+app.js
+app.js.map
+target
+*.ffs_db
+*.icns
+*.ico
+*.jpeg
+*.jpg
+*.mp3
+*.mp4
+*.ogg
+*.png
+*.webm
+*.webp
+*.rpy
+*.ttf

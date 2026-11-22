@@ -1,0 +1,739 @@
+/*
+ * theme.css -- the look of the DOM UI layer.
+ *
+ * Everything the game shows *except* the dialogue box, the choice list and the
+ * stage text cards lives here: the boot splash, the start menu, the preferences
+ * screen, the save / load grid and the in-game pause overlay. Those three
+ * canvas elements are configured by `story/theme.lor` instead; this file is the
+ * equivalent of that file for the DOM layer.
+ *
+ * Like `theme.lor` it is read at runtime: editing it needs no recompile, only an
+ * app restart. Nothing here is compiled, so class names in
+ * `src/drift/ui/DomUi.hx` are the contract between the two.
+ *
+ * Coordinates are design pixels (the same 1920x1080 logical space as
+ * `theme.lor`): `#ui-overlay` is scaled and centred by DomUi to match the
+ * canvas world transform, so a value here reads the same as one in theme.lor.
+ */
+
+/* ---- fonts ---------------------------------------------------------
+ * The game ships its own faces in bin/fonts and declares them here so
+ * neither UI layer depends on the family being installed. Declaring them
+ * in this stylesheet makes them document-wide: `index.html`'s body text
+ * (status bar, play toolbar) and the Haxe-driven prompt field all pick
+ * them up too. A DOM element re-renders on its own when a webfont lands,
+ * but the canvas bakes glyph metrics at Pixi Text construction time, so
+ * Main.hx additionally awaits the faces through document.fonts.load
+ * before the renderer boots. "bold" (700) resolves to the 600 face per
+ * CSS font matching - nothing is declared at 700, so 600 is the nearest.
+ *
+ * Special Elite is not a UI face: it is named by a `+show text` card
+ * (`font SpecialElite-Regular`, ch09's stereoscope captions), and nothing
+ * in the DOM asks for it - so the browser would never fetch it and the
+ * first card would be measured against the fallback family. It is
+ * declared and preloaded for that one reason.
+ */
+@font-face {
+	font-family: "Source Sans 3";
+	src: url("fonts/SourceSans3-Regular.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Source Sans 3";
+	src: url("fonts/SourceSans3-SemiBold.ttf") format("truetype");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "SpecialElite-Regular";
+	src: url("fonts/SpecialElite-Regular.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+#ui-overlay {
+	/* Fallback size until DomUi sets the real design size + transform. */
+	width: 1920px;
+	height: 1080px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	transform-origin: 0 0;
+	/* Transparent to the pointer until a screen is open, so the canvas keeps
+	   the "click to advance" it owns. An active screen re-enables events. */
+	pointer-events: none;
+	z-index: 3;
+
+	font-family: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+	font-weight: 400;
+	color: var(--c-text);
+	line-height: 1.3;
+
+	/* ---- palette ------------------------------------------------------ */
+	--c-text: #f0f0ff;
+	--c-muted: #9a9ab0;
+	--c-accent: #b89fff;
+	--c-panel: #10101a;
+	--c-slot: #2a2a44;
+	--c-slot-border: #5a5a88;
+	--c-button: #2a2a44;
+	--c-button-hover: #3d3d63;
+	--c-button-border: #5a5a88;
+	--c-sidebar: rgba(15, 15, 26, 0.9);
+}
+
+/* ---- screens -------------------------------------------------------- */
+
+.ui-screen {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	opacity: 0;
+	visibility: hidden;
+	/* Fade in immediately; on the way out, hide only after the fade has run, so
+	   an outgoing screen does not wink out of hit-testing mid-transition. */
+	transition: opacity 180ms ease, visibility 0s linear 180ms;
+}
+
+.ui-screen.active {
+	pointer-events: auto;
+	opacity: 1;
+	visibility: visible;
+	transition: opacity 180ms ease, visibility 0s;
+}
+
+.ui-bg,
+.ui-scrim {
+	position: absolute;
+	inset: 0;
+}
+
+.ui-bg {
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+/* A screen whose backdrop is a clip (`tpl-start`) layers a `<video>` over the
+   still `background-image`, which stays as the poster / fallback. It fills the
+   screen and is inert to the pointer, so the menu rows above it keep their
+   clicks. The two paths are the `menu` block in `theme.lor`; DomUi applies them
+   to the video and the still behind it, so only the framing lives here. */
+.ui-bg-video {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	pointer-events: none;
+}
+
+.ui-scrim {
+	background: transparent;
+}
+
+/* Per-screen backdrops. Edit these to change a menu's art; a `background-image`
+   wins over the plain clear colour behind the canvas. */
+.ui-screen[data-screen="boot"] .ui-bg {
+	background-image: url("assets/game_logo.webp");
+	background-size: contain;
+	background-position: center;
+}
+
+/* The start menu's still fallback is set inline from `theme.lor`'s `menu`
+   block (see `DomUi.applyMenuBackdrop`), so it has no rule of its own here. */
+
+.ui-screen[data-screen="config"] .ui-scrim,
+.ui-screen[data-screen="saveload"] .ui-scrim {
+	background: rgba(16, 16, 26, 0.55);
+}
+
+.ui-screen[data-screen="pause"] .ui-scrim {
+	/* Flat, opaque: the pause overlay is one dark sheet with a hairline
+	   splitting the sidebar from the column, not a scrim over live art. */
+	background: #0e0613;
+}
+
+/* ---- body layout ---------------------------------------------------- */
+
+.ui-body {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	width: 100%;
+	height: 100%;
+	padding: 80px 120px;
+	gap: 32px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.ui-body--boot {
+	align-items: center;
+	justify-content: center;
+	gap: 28px;
+}
+
+.ui-body--start {
+	align-items: stretch;
+	justify-content: flex-start;
+	padding: 0;
+}
+
+.ui-body--config,
+.ui-body--saveload {
+	justify-content: flex-start;
+	padding: 60px 120px 110px;
+	gap: 24px;
+}
+
+.ui-body--pause {
+	flex-direction: row;
+	align-items: stretch;
+	padding: 0;
+	gap: 0;
+}
+
+/* ---- text ----------------------------------------------------------- */
+
+.ui-title {
+	margin: 0;
+	font-size: 75px;
+	font-weight: 700;
+	text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
+	text-align: center;
+}
+
+.ui-body--config .ui-title,
+.ui-body--saveload .ui-title {
+	font-size: 56px;
+}
+
+.ui-boot-status {
+	margin: 0;
+	font-size: 36px;
+	color: var(--c-muted);
+}
+
+/* ---- buttons -------------------------------------------------------- */
+
+.ui-btn {
+	font: inherit;
+	font-size: 36px;
+	padding: 12px 24px;
+	border-radius: 8px;
+	border: 2px solid var(--c-button-border);
+	background: var(--c-button);
+	color: var(--c-text);
+	cursor: pointer;
+	text-align: center;
+	transition: background 120ms ease, border-color 120ms ease;
+}
+
+.ui-btn:hover:not(:disabled) {
+	background: var(--c-button-hover);
+}
+
+.ui-btn:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+/* ---- start menu -----------------------------------------------------
+   One dark column down the left of the title art: the logo at the top, then
+   the menu. Every row is icon + label; hover lays the sidebar overlay under
+   the row and warms the label, which is the whole of the button's look (the
+   rows have no panel of their own). A row with no `data-action` is inert and
+   simply never lights up its handler - Extras, Support the Game and
+   Notifications are spelled that way until they have somewhere to go. */
+
+.ui-menu-panel {
+	display: flex;
+	flex-direction: column;
+	width: 420px;
+	height: 100%;
+	padding: 20px 14px 40px 52px;
+	box-sizing: border-box;
+	background: linear-gradient(180deg, #0d0612 0%, #0f0816 55%, #150a1c 100%);
+}
+
+/* The logo is a background image, not an `<img>`: the asset path belongs here
+   with every other size and colour, so the markup carries only the element and
+   its accessible name. The 1235x820 aspect is kept so the height follows the
+   width the way the image's intrinsic ratio used to. */
+.ui-menu-logo {
+	display: block;
+	width: 530px;
+	aspect-ratio: 1235 / 820;
+	margin-left: 4px;
+	background-image: url("assets/gui/logo_overbooked.webp");
+	background-size: contain;
+	background-position: left center;
+	background-repeat: no-repeat;
+}
+
+.ui-menu {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	margin-top: 40px;
+}
+
+.ui-menu-item {
+	display: flex;
+	align-items: center;
+	gap: 25px;
+	width: 100%;
+	height: 66px;
+	padding: 0 18px;
+	box-sizing: border-box;
+	border: none;
+	border-radius: 8px;
+	background: transparent;
+	color: #a3a3a3;
+	font: inherit;
+	font-size: 32px;
+	text-align: left;
+	cursor: pointer;
+	transition: color 120ms ease;
+	white-space: nowrap;
+}
+
+.ui-menu-item:hover,
+.ui-menu-item:focus-visible {
+	background-image: url("gui/sidebar/selection.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	color: #ffb6c1;
+	outline: none;
+}
+
+/* The pause sidebar reuses a row as its active-entry highlight. That is the
+   *selected* state, not hover, which is why it stays white where hover warms
+   to pink (see `example/button_overlay.png`). */
+.ui-menu-item.active {
+	background-image: url("gui/sidebar/selection.png");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	color: #ffffff;
+	outline: none;
+}
+
+/* The icons are monochrome SVG, so they are tinted through a mask rather
+   than recoloured: the glyph is `currentColor`, and a hovered row whitens it
+   while the label warms - the pairing `example/button_overlay.png` shows. */
+.ui-menu-icon {
+	flex: none;
+	width: 24px;
+	height: 24px;
+	background-color: currentColor;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+}
+
+.ui-menu-item:hover .ui-menu-icon,
+.ui-menu-item:focus-visible .ui-menu-icon,
+.ui-menu-item.active .ui-menu-icon {
+	background-color: #ffffff;
+}
+
+.ui-menu-icon--house {
+	-webkit-mask-image: url("assets/shared/icons/house.svg");
+	mask-image: url("assets/shared/icons/house.svg");
+}
+
+.ui-menu-icon--folder {
+	-webkit-mask-image: url("assets/shared/icons/folder.svg");
+	mask-image: url("assets/shared/icons/folder.svg");
+}
+
+.ui-menu-icon--sparkles {
+	-webkit-mask-image: url("assets/shared/icons/sparkles.svg");
+	mask-image: url("assets/shared/icons/sparkles.svg");
+}
+
+.ui-menu-icon--heart {
+	-webkit-mask-image: url("assets/shared/icons/heart.svg");
+	mask-image: url("assets/shared/icons/heart.svg");
+}
+
+.ui-menu-icon--gear {
+	-webkit-mask-image: url("assets/shared/icons/gear.svg");
+	mask-image: url("assets/shared/icons/gear.svg");
+}
+
+.ui-menu-icon--bell {
+	-webkit-mask-image: url("assets/shared/icons/bell.svg");
+	mask-image: url("assets/shared/icons/bell.svg");
+}
+
+.ui-menu-icon--power {
+	-webkit-mask-image: url("assets/shared/icons/power.svg");
+	mask-image: url("assets/shared/icons/power.svg");
+}
+
+.ui-menu-divider {
+	width: 252px;
+	height: 2px;
+	margin: 32px 0 32px 29px;
+	background: rgba(255, 255, 255, 0.22);
+}
+
+.ui-footer {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	margin-top: auto;
+}
+
+/* ---- pause overlay --------------------------------------------------
+   The in-game menu is the same dark column as the start menu, but flat and
+   split from the content column by a hairline. Its entries are plain
+   `.ui-menu-item` rows (see the start menu above), so History / Save / Load /
+   Preferences / Notifications / Main Menu / Quit share those icon rows and
+   their hover overlay; the active pane is highlighted white. Return sits
+   alone at the foot of the column. */
+
+.ui-pause-sidebar {
+	background: transparent;
+	border-right: 3px solid #3d2040;
+}
+
+.ui-pause-menu {
+	flex: 1;
+}
+
+.ui-pause-return {
+	margin-top: auto;
+}
+
+.ui-content {
+	flex: 1;
+	display: flex;
+	padding: 140px 96px 60px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+/* The pane heading names the page over the grid; the grid is the loud element,
+   so the title is a light line, not a banner. */
+.ui-content .ui-title {
+	font-size: 36px;
+	font-weight: 400;
+	text-shadow: none;
+	color: #fadaff;
+	margin-bottom: 32px;
+}
+
+/* One pane of the pause column at a time (Menu / Save / Load / Preferences /
+   History). Persistent, so switching does not rebuild and scroll position
+   survives. */
+.ui-view {
+	display: none;
+	flex: 1;
+	min-height: 0;
+	flex-direction: column;
+	gap: 62px;
+	overflow-y: auto;
+}
+
+.ui-view.active {
+	display: flex;
+}
+
+/* ---- preference rows ------------------------------------------------ */
+
+.ui-rows {
+	display: flex;
+	flex-direction: column;
+	gap: 22px;
+	width: min(760px, 100%);
+}
+
+.ui-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+}
+
+.ui-row-label {
+	font-size: 24px;
+}
+
+.ui-row-control {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.ui-row-value {
+	font-size: 32px;
+	min-width: 170px;
+	text-align: center;
+}
+
+.ui-step {
+	width: 56px;
+	height: 56px;
+	padding: 0;
+	font-size: 28px;
+	line-height: 1;
+}
+
+/* ---- save / load grid -----------------------------------------------
+   Three slots across, two down (six a page). A slot is a 16:9 cell with its
+   caption under it; the caption is what the row gap below has to clear, which
+   is why the row gap dwarfs the column gap. An empty slot is the flat teal
+   placeholder, a filled one is its thumbnail. */
+
+.ui-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	column-gap: 45px;
+	row-gap: 78px;
+	width: min(1242px, 100%);
+	margin: 0 auto;
+}
+
+.ui-slot {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding: 0;
+	border: none;
+	background: transparent;
+	color: var(--c-text);
+	font: inherit;
+	cursor: pointer;
+	text-align: center;
+	min-width: 0;
+}
+
+.ui-slot-thumb {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	aspect-ratio: 16 / 9;
+	background: #003d51;
+	overflow: hidden;
+}
+
+.ui-slot-thumb img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.ui-slot-action {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(16, 16, 26, 0.55);
+	font-size: 20px;
+	font-weight: 700;
+	opacity: 0;
+	transition: opacity 120ms ease;
+}
+
+.ui-slot:hover .ui-slot-action {
+	opacity: 1;
+}
+
+.ui-slot-name {
+	font-size: 20px;
+	color: #aaaaaa;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.ui-slot--inert {
+	cursor: default;
+}
+
+.ui-slot--inert:hover .ui-slot-action {
+	opacity: 0;
+}
+
+/* A row of page cells with a chevron at each end. The current page is the
+   white one; every other glyph, arrows included, is the same soft grey. */
+.ui-pager {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+}
+
+.ui-pager-page,
+.ui-pager-arrow {
+	min-width: 40px;
+	height: 48px;
+	padding: 0;
+	border: none;
+	background: none;
+	color: #a3a3a3;
+	font: inherit;
+	font-size: 30px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.ui-pager-page:hover,
+.ui-pager-arrow:hover:not(:disabled) {
+	color: #ffffff;
+}
+
+.ui-pager-page.active {
+	color: #ffffff;
+}
+
+.ui-pager-arrow:disabled {
+	opacity: 0.35;
+	cursor: default;
+}
+
+/* ---- history -------------------------------------------------------- */
+
+.ui-history {
+	flex: 1;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding-right: 16px;
+}
+
+.ui-history-name {
+	font-size: 30px;
+	font-weight: 700;
+	color: var(--c-accent);
+}
+
+.ui-history-text {
+	font-size: 28px;
+	margin-bottom: 12px;
+}
+
+.ui-hint {
+	margin: 0;
+	font-size: 32px;
+	color: var(--c-muted);
+}
+
+/* ---- change notifications ------------------------------------------- */
+
+/* A choice that moves a character variable pops a small card at the top of the
+   screen: the character's avatar, the variable's name and the signed change.
+   The stack is built by DomUi (it is not a screen), sits over live playback and
+   is pointer-transparent so it never eats the click that advances the line.
+
+   A card animates itself the moment it is inserted, over one lifetime
+   (`DomUi.notify`'s removal timer): `ui-notify-pop` scales it in with an elastic
+   overshoot, `ui-notify-rise` drifts it upwards at a constant speed for the whole
+   time, and `ui-notify-fade` fades it in linearly, holds, then fades out
+   linearly. `translate` / `scale` are animated as their own properties rather
+   than through `transform`, so the pop and the rise carry different durations and
+   timing on the one element. */
+
+.ui-notify-stack {
+	position: absolute;
+	top: 120px;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	pointer-events: none;
+	z-index: 6;
+}
+
+.ui-notify {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 10px 24px 10px 10px;
+	/* The resting state a card starts from (and keeps if the animations are
+	   unavailable): hidden and small, at its origin. */
+	opacity: 0;
+	scale: 0.6;
+	translate: 0 0;
+	/* The whole life, kept in step with the 2900ms removal timer in DomUi. */
+	animation:
+		ui-notify-pop 700ms linear both,
+		ui-notify-rise 2000ms linear both,
+		ui-notify-fade 2000ms linear both;
+}
+
+/* easeOutElastic, sampled into keyframes: one overshoot, then a decaying settle.
+   Pure CSS has no elastic timing function, so the shape lives in the values and
+   the animation's own timing stays linear. */
+@keyframes ui-notify-pop {
+	0% { scale: 0.6; }
+	18% { scale: 1.1; }
+	36% { scale: 0.97; }
+	54% { scale: 1.03; }
+	72% { scale: 0.99; }
+	100% { scale: 1; }
+}
+
+/* A constant upward drift for the card's whole life. */
+@keyframes ui-notify-rise {
+	from { translate: 0 0; }
+	to { translate: 0 -120px; }
+}
+
+/* Linear fade in, hold, linear fade out. */
+@keyframes ui-notify-fade {
+	0% { opacity: 0; }
+	10% { opacity: 1; }
+	100% { opacity: 0; }
+}
+
+.ui-notify-avatar {
+	width: 72px;
+	height: 72px;
+	object-fit: cover;
+	border-radius: 10px;
+	border: 2px solid var(--c-slot-border);
+	display: block;
+}
+
+.ui-notify-var {
+	font-size: 36px;
+	font-weight: 600;
+	color: var(--c-text);
+	text-shadow: -2px 0 black, 2px 0 black, 0 -2px black, 0 2px black;
+}
+
+.ui-notify-delta {
+	font-size: 36px;
+	font-weight: 700;
+	text-shadow: -2px 0 black, 2px 0 black, 0 -2px black, 0 2px black;
+}
+
+.ui-notify-delta--up {
+	color: #7ee787;
+}
+
+.ui-notify-delta--down {
+	color: #ff8080;
+}

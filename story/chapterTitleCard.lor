@@ -1,0 +1,8 @@
+beat ChapterTitleCard(title, subtitle)
+	+scene bg black with dissolve
+
+	+show text "${title}[size=64]\n${subtitle}[size=48]" at center with fade
+
+	+wait 4.0
+
+	+hide text
