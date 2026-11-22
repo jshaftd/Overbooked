@@ -5,41 +5,45 @@ import images
 import state
 
 beat ch01
-	ChapterTitleCard("Chapter 1", "Arrival")
+	ChapterTitleCard("Kapitel 1", "Ankunft")
 
 	-> arrival
 
 beat arrival
-	Nach einem langen Flug kommst du am Flughafen an
+	Nach einem langen Flug kommst du am Flughafen an.
 
-	Du hast das Gepäck grad abgeholt
+	Du hast das Gepäck grad abgeholt.
 
-	Die letzten Arbeitstage schienen kein Ende zu nehmen
+	Die letzten Arbeitstage schienen kein Ende zu nehmen.
 
-	Aber jetzt hast du es geschafft
+	Aber jetzt hast du es geschafft.
 
 	Urlaub!!!
 
-	Du steigst aus dem Taxi aus
+	Du steigst aus dem Taxi aus.
 
-	La Casa Azul
+	La Casa Azul.
 
-	Kleine Appartment sind aufgereiht
+	Kleine Appartments rund um einen Pool.
 
-	In der Mitte ein Pool
+	Daneben eine Bar und ein Restaurant.
 
-	Daneben eine Bar und ein Restaurant
-
-	Neben dem Eingang die Rezeption
+	Neben dem Eingang die Rezeption.
 
 	clerk: Herzliche willkomen bei La Casa Azul!
+	clerk: Mein Name ist Ramon.
+	clerk.name := Ramon
 	clerk: Wie ist ihr Name?
 
-	ask("Wie ist dein Vorname?", "mc.name", "Alex")
-	ask("Wie ist dein Nachname?", "mc.surname", "Smith")
+	ask("Wie ist dein Vorname?", "p.name", "Alex")
+	ask("Wie ist dein Nachname?", "p.surname", "Smith")
 
+	clerk: Lassen Sie mich kurz nachschauen...
+	clerk: Ah, ja hier. $p.name $p.surname. Zimmer 115.
+	clerk: Geradeaus nach hinten, dann links.
+	clerk: Ich wünsche Ihnen einen schönen Aufenthalt.
 
-	Nr. 115 ist schnell gefunden
+	Da ist Nummer 115 schon.
 
 	Wohnzimmer
 
@@ -47,22 +51,100 @@ beat arrival
 
 	Küche
 
-	Koffer ausgepackt
+	Einfach, aber gemütlich.
 
-	So jetzt erst mal einkaufen
+	Die Koffer sind gleich ausgepackt.
 
-	Nudeln, check
-	Salat, check
-	Parmesan, check
-	Tomatensauce
-	Vor dem Regal mit unzähligen Sorten steht ein Mädel
-	Sie überlegt hin und her
-	Sie nimmt eine Sauce, liest, stellt sie wieder zurück
-	Nimmt eine andere, nimmt noch eine, liest
-	stellt beide zurück
-	Ich hab hunger
-	Ich geh hin
-	Entschuldigung, darf ich kurz
-	Nehme die erst beste und will grad gehen
+	So jetzt erst mal was einkaufen.
 
-	Mädel
+	-> groceries
+
+beat groceries
+	Gleich ums Eck ist ein Supermarkt.
+
+	Nudeln...
+
+	Check
+	
+	Salat...
+
+	Check
+	
+	Parmesan...
+
+	Check
+	
+	Tomatensauce...
+
+	Vor dem Regal mit vielen Saucen steht ein Mädel.
+	
+	Sie überlegt.
+
+	Sie nimmt eine Sauce...
+	
+	Liest...
+	
+	Stellt sie wieder zurück.
+
+	Nimmt eine andere...
+	
+	Nimmt noch eine...
+	
+	Vergleicht...
+
+	Stellt beide zurück
+
+	p: (Ich hab Hunger)
+	
+	Ich geh hin.
+	
+	Entschuldigung, darf ich kurz.
+	
+	Du nimmst die erst beste und willst gerade weitergehen.
+	
+	l.attraction += 5
+	l.name := Mädel
+	
+	l: Halt!
+
+	Du schaust sie das erste mal richtig an.
+
+	Sie steht mit offenem Mund da.
+	
+	Sieht eigentlich ganz süß aus.
+
+	p: Ja?
+	l: Wie hast du das gerade gemacht?
+	p: Gemacht? Was gemacht?
+	l: Wie hast du jetzt so schnell eine Flasche Tomatensauce ausgesucht.
+	l: Ich steh hier schon seit einer Viertelstunde...
+	l: Und kann mich nicht entscheiden.
+
+	choice
+		Einfach eine genommen
+			p: Ich bin da nicht so wählerisch. Wird schon schmecken.
+			
+			l.attraction -= 1
+			
+			l: Hmm, da bin ich wohl etwas anders.
+			l: Aber gut. Dann probiere ich die auch mal.
+
+		Von der Sorte sind nur noch wenige da
+			p: Das muss die beliebteste sein.
+			p: Davon sind nur noch wenige übrig.
+			
+			l.attraction +=1
+			
+			l: Raffiniert. Dann probiere ich die auch mal.
+
+		Du hast die beste sofort erkannt
+			p: Die hier ist eindeutig die beste.
+			p: Die Tomaten auf der Hülle haben Comic Augen.
+			
+			l.attraction += 1
+			
+			l: Hahaha. Stimmt die muss die beste sein.
+			p: Ausserdem sind da nur noch wenige übrig.
+			l: Ah, genau. Dann probiere ich die auch mal.
+		
+	p: Guten Appetit!
