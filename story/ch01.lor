@@ -57,6 +57,23 @@ beat arrival
 
 	So jetzt erst mal was einkaufen.
 
+	-> day1_pool
+
+beat day1_pool
+	Auf dem Weg am Pool schaust du dir die anderen Gäste genauer an
+
+	p: (Hmm, ist echt nicht meine Altersklasse)
+
+	p: (Also Vorsicht mit dem Alkohol hier an der Bar)
+
+	p: (Nicht, dass ich die plötzlich noch attraktiv finde)
+
+	old_woman: *lächelnd* Guten Tag.
+
+	p: *freundlich* Guten Tag.
+
+	P: (Und schnell weiter.)
+
 	-> groceries
 
 beat groceries
@@ -107,9 +124,9 @@ beat groceries
 	
 	l: Halt!
 
-	Du schaust sie das erste mal richtig an.
+	Du siehst das erste mal ihr Gesicht.
 
-	Sie steht mit offenem Mund da.
+	Sie schaut dich fassungslos an.
 	
 	Sieht eigentlich ganz süß aus.
 
@@ -132,19 +149,56 @@ beat groceries
 		Von der Sorte sind nur noch wenige da
 			p: Das muss die beliebteste sein.
 			p: Davon sind nur noch wenige übrig.
-			
 			l.attraction +=1
 			
 			l: Raffiniert. Dann probiere ich die auch mal.
 
-		Du hast die beste sofort erkannt
-			p: Die hier ist eindeutig die beste.
-			p: Die Tomaten auf der Hülle haben Comic Augen.
-			
+		Antworte mit einem Scherz
+			p: Wenn du genau hinsiehst, merkst du dass die das intensivste Rot hat.
+			l: Ohh... wirklich?
+			p: Haha, Nein, nicht wirklich. Aber es sind am wenigsten übrig.
 			l.attraction += 1
 			
 			l: Hahaha. Stimmt die muss die beste sein.
-			p: Ausserdem sind da nur noch wenige übrig.
-			l: Ah, genau. Dann probiere ich die auch mal.
+			l: Dann probiere ich die auch mal.
 		
 	p: Guten Appetit!
+
+	-> first evening
+
+beat first_evening
+	Nach dem gehaltvollen Abendessen überkommt dich die Müdigkeit.
+
+	Du schaffst es gerade noch bis ins Bett.
+
+	Es war ein langer Reisetag und der Urlaub geht ja erst los.
+
+	-> city_tour
+
+beat city_tour
+	Am nächsten Morgen wecken dich die ersten warmen Sonnenstrahlen.
+
+	Es ist wunderschönes Wetter.
+
+	Ein neuer Ort wartet darauf, entdeckt zu werden.
+
+	Nach einem leckeren Frühstück gehst du zu Fuß an der Stranspromenade entlang in die Stadt.
+
+	l: Hey, da bist du ja wieder.
+	l: Erinnerst du dich? Du hast mir gestern mit der Tomatensauce geholfen.
+	p: Ah ja. Hallo auch.
+	l: War eine gute Wahl. Sehr lecker.
+	p: Ja fand ich auch.
+	l: Gehst du auch in die Stadt?
+	p: Ja, heute ist mein erster Tag hier. Ich wollte mich mal umschauen.
+	l: Dann komm ich doch gleich mit wenns ok ist.
+	p: Gerne
+	l: Mein Name ist übrigends Livia
+	l.name := Livia
+	p: $p.name
+
+	l: Bist du alleine hier.
+	p: Ja, ich hab kurzfristig frei bekommen und die Chance gleich genutzt.
+	l: Ich bin mit meiner Schwester hier.
+	l: Aber die liegt noch im Bett. Sie ist eher nachtaktiv.
+

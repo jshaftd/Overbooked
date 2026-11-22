@@ -3,12 +3,16 @@ character p
 	surname: Bold
 	color: "#9ed0ff"
 
-character clerk
-	name: Empfangsmitarbeiter
-	color: "#80cd77"
-
 character l
 	name: Livia
 	color: "#ffc2f4"
 	attraction: 0
 	comfort: 0
+
+character clerk
+	name: Empfangsmitarbeiter
+	color: "#80cd77"
+
+character old_woman
+	name: Ältere Dame
+	color: "#B9A882"
