@@ -1,0 +1,30 @@
+import ../characters
+
+beat test_stat_popup
+	Entschuldigung, darf ich kurz.
+	
+	Du nimmst die erst beste und willst gerade weitergehen.
+	
+	l.attraction += 5
+
+	l: Wie hast du das gerade gemacht?
+	
+	choice
+		Einfach eine genommen
+			p: Ich bin da nicht so wählerisch. Wird schon schmecken.
+			
+			l.attraction -= 1
+		
+		Von der Sorte sind nur noch wenige da
+			p: Das muss die beliebteste sein.
+			p: Davon sind nur noch wenige übrig.
+			l.attraction +=1
+
+		Antworte mit einem Scherz
+			p: Wenn du genau hinsiehst, merkst du dass die das intensivste Rot hat.
+			l: Ohh... wirklich?
+			p: Haha, Nein, nicht wirklich. Aber es sind am wenigsten übrig.
+			l.attraction += 1
+
+	p: Guten Appetit!
+

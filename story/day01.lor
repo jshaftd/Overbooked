@@ -61,7 +61,7 @@ beat arrival
 	-> day1_pool
 
 beat day1_pool
-	Auf dem Weg am Pool schaust du dir die anderen Gäste genauer an
+	Auf dem Weg am Pool schaust du dir die anderen Gäste genauer an.
 
 	p: (Hmm, ist echt nicht meine Altersklasse)
 
@@ -125,11 +125,9 @@ beat groceries
 	
 	l: Halt!
 
-	Du siehst das erste mal ihr Gesicht.
+	Du drehst dich zurück zu ihr und schaust sie an.
 
-	Sie schaut dich fassungslos an.
-	
-	Sieht eigentlich ganz süß aus.
+	p: (Sieht eigentlich ganz süß aus.)
 
 	p: Ja?
 	l: Wie hast du das gerade gemacht?

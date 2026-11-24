@@ -218,3 +218,13 @@ state
 			sound: 1.0
 			musicFade: 2.0
 			soundFade: 0.0
+
+		// ---- character stat labels --------------------------------------
+		// The label a change toast shows for a character stat when a choice
+		// moves it, keyed by the field name. A field not listed here shows its
+		// raw name, so adding a label is optional. This is the seam a
+		// translation edits: swap these strings (or `import` a language file)
+		// without touching the story or recompiling.
+		statLabels:
+			attraction: "Attraktion"
+			trust: "Vertrauen"

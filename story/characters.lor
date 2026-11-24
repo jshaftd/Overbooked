@@ -5,9 +5,10 @@ character p
 
 character l
 	name: Livia
-	color: "#ffc2f4"
+	color: "#feecb2"
+	avatar:  assets/shared/avatars/livia.jpg
 	attraction: 0
-	comfort: 0
+	trust: 0
 
 character clerk
 	name: Empfangsmitarbeiter
