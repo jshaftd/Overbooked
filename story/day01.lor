@@ -1,11 +1,12 @@
 import chapterTitleCard
 import char_images
 import characters
+import day02
 import images
 import state
 
-beat ch01
-	ChapterTitleCard("Kapitel 1", "Ankunft")
+beat day01
+	ChapterTitleCard("Tag 1", "Ankunft")
 
 	-> arrival
 
@@ -164,41 +165,14 @@ beat groceries
 		
 	p: Guten Appetit!
 
-	-> first evening
+	-> tired
 
-beat first_evening
+beat tired
 	Nach dem gehaltvollen Abendessen überkommt dich die Müdigkeit.
 
 	Du schaffst es gerade noch bis ins Bett.
 
 	Es war ein langer Reisetag und der Urlaub geht ja erst los.
 
-	-> city_tour
-
-beat city_tour
-	Am nächsten Morgen wecken dich die ersten warmen Sonnenstrahlen.
-
-	Es ist wunderschönes Wetter.
-
-	Ein neuer Ort wartet darauf, entdeckt zu werden.
-
-	Nach einem leckeren Frühstück gehst du zu Fuß an der Stranspromenade entlang in die Stadt.
-
-	l: Hey, da bist du ja wieder.
-	l: Erinnerst du dich? Du hast mir gestern mit der Tomatensauce geholfen.
-	p: Ah ja. Hallo auch.
-	l: War eine gute Wahl. Sehr lecker.
-	p: Ja fand ich auch.
-	l: Gehst du auch in die Stadt?
-	p: Ja, heute ist mein erster Tag hier. Ich wollte mich mal umschauen.
-	l: Dann komm ich doch gleich mit wenns ok ist.
-	p: Gerne
-	l: Mein Name ist übrigends Livia
-	l.name := Livia
-	p: $p.name
-
-	l: Bist du alleine hier.
-	p: Ja, ich hab kurzfristig frei bekommen und die Chance gleich genutzt.
-	l: Ich bin mit meiner Schwester hier.
-	l: Aber die liegt noch im Bett. Sie ist eher nachtaktiv.
+	-> day02
 

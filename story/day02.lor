@@ -1,0 +1,38 @@
+import chapterTitleCard
+import char_images
+import characters
+import images
+import state
+
+beat day02
+	ChapterTitleCard("Tag 2", "Stadtour")
+
+	-> city_tour
+
+beat city_tour
+	Am nächsten Morgen wecken dich die ersten warmen Sonnenstrahlen.
+
+	Es ist wunderschönes Wetter.
+
+	Ein neuer Ort wartet darauf, entdeckt zu werden.
+
+	Nach dem Aufstehen
+
+	l: Hey, da bist du ja wieder.
+	l: Erinnerst du dich? Du hast mir gestern mit der Tomatensauce geholfen.
+	p: Ah ja. Hallo auch.
+	l: War eine gute Wahl. Sehr lecker.
+	p: Ja fand ich auch.
+	l: Gehst du auch in die Stadt?
+	p: Ja, heute ist mein erster Tag hier. Ich wollte gerade frühstücken gehen.
+	l: Ich auch. Dann komm ich doch gleich mit wenns ok ist.
+	l: Mein Name ist übrigends Livia
+	l.name := Livia
+	p: $p.name
+	l: Bist du alleine hier.
+	p: Ja, ich hab kurzfristig frei bekommen und die Chance gleich genutzt.
+	l: Ich bin mit meiner Schwester hier.
+	l: Aber die liegt noch im Bett. Sie ist eher nachtaktiv.
+	p: Wie lange seit ihr schon hier?
+	l: Wir sind vorgestern angekommen.
+
