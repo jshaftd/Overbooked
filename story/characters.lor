@@ -10,6 +10,10 @@ character l
 	attraction: 0
 	trust: 0
 
+character teacher
+	name: Lehrerin
+	color: "#fa2c8d"
+
 character clerk
 	name: Empfangsmitarbeiter
 	color: "#80cd77"
@@ -17,3 +21,11 @@ character clerk
 character old_woman
 	name: Ältere Dame
 	color: "#B9A882"
+
+character merchant
+	name: Händler
+	color: "#F05304"
+
+character waiter
+	name: Kellner
+	color: "#67fe97"

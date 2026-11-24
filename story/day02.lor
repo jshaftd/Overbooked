@@ -16,7 +16,7 @@ beat city_tour
 
 	Ein neuer Ort wartet darauf, entdeckt zu werden.
 
-	Nach dem Aufstehen machst du dich auf in die Stadt
+	Nach dem Aufstehen machst du dich gleich auf den Weg an der Strandpromenade entlang.
 
 	l: Hey, da bist du ja wieder.
 	l: Erinnerst du dich? Du hast mir gestern mit der Tomatensauce geholfen.
@@ -32,7 +32,153 @@ beat city_tour
 	l: Bist du alleine hier.
 	p: Ja, ich hab kurzfristig frei bekommen und die Chance gleich genutzt.
 	l: Ich bin mit meiner Schwester hier.
-	l: Aber die liegt noch im Bett. Sie ist eher nachtaktiv.
+	l: Aber die schläft noch. Sie ist eher nachtaktiv.
 	p: Wie lange seit ihr schon hier?
 	l: Wir sind vorgestern angekommen.
+
+	Livia berichtet über ihre bisherigen Erfahrungen an dem Ferienort
+
+	Unterwegs seht ihr ein Stand mit Holzfiguren der gerade von einem Mann aufgebaut wird.
+
+	p: Diese Stände mit den geschnitzten Holzelefanten gibts auch überall.
+	l: Ich mag Elefanten.
+	merchant: Good morning. Please take a look.
+	merchant: Very beautiful pieces today.
+	p: Das sieht aber nicht nach Elefanten aus.
+	l: Oh mein Gott!
+	p: Das ist auch kein Elefantenrüssel.
+	merchant: No, No elephants today. These better.
+	merchant: This one for beautiful lady.
+	merchant: Very good for fertility.
+	l: Wofür?
+	p: Haha, ich glaube er meint Fruchtbarkeit.
+	l: Thank you. My Fertility ist zur Zeit nicht so gefordert.
+	merchant: And here for you sir. Gives strength in bed.
+	p: Oh, thank you. Ist aber auch grad nicht so das Thema.
+	merchant: Very well. If you change mind. You know where to find me.
+
+	l: Unglaublich, dass die sowas hier auf der Straße verkaufen.
+	choice
+		Zustimmung
+			p: Find ich auch unmöglich.
+		Jeder wie er möchte
+			l.trust += 1
+			p: Wenns keinen Stört. Hat schon was.
+		Nachfrage
+			p: Die Nachfrage scheint ja da zu sein.
+			l.attraction += 1
+			p: Ich weiß aber noch genau nicht was mir das über diesen Urlaubsort sagt.
+			l: Geht aber in eine bestimmte Richtung.
+	
+	-> cafe
+
+beat cafe
+	Weiter vorne ist ein schöner Platz mit einem netten Café.
+	p: Wie wärs hier.
+	l: Sieht sehr einladend aus.
+
+	Ihr setzt euch draussen an einen Tisch.
+		
+	Schon gleich kommt ein freundlicher Kellner daher.
+	waiter: Bienvenidos. Herzlich willkommen im Paradise Café. Mein Name ist Gustavo.
+	waiter: Was darf ich bringen? Señorita?
+	l: Ein Kaffe und ein Croissant bitte.
+	waiter: Gute Wahl! Und der Señor.
+
+	choice
+		Das Gleiche
+			l.trust += 1
+			day02_breakfast_selection := 0
+		  -> choose_same_breakfast
+		
+		Nach Empfehlung fragen
+			l.trust += 1
+			day02_breakfast_selection := 1
+			-> choose_breakfast_suggestion
+
+		Überraschung
+		 	l.attraction += 1
+			day02_breakfast_selection := 2
+			-> choose_surprise_meal
+
+
+beat choose_same_breakfast
+	waiter: Sehr gerne.
+	
+	Er geht zurück in Richtung Küche.
+
+	l: Ich denke grad. Dass ich immer das gleiche zum Frühstück esse.
+	l: Jetzt wär mal die Gelegenheit gewesen was neues auszuprobieren.
+	p: Ich finde es ganz entspannend, an einem neuen Ort vertraute Gewohnheiten zu pflegen.
+	l: Ja, da ist auch was dran.
+
+	discover_tower()
+
+	p: Dankeschön.
+
+beat choose_breakfast_suggestion
+	p: Auch einen Kaffee. Und zu essen?
+	p: Ich bin noch untentschlossen. Was können Sie mir denn empfehlen?
+	waiter: Wie wärs mit Quesito? Einem leckeren süßen Gericht, das aus Puerto Rico kommt.
+	p: Hört sich gut an. Das nehm ich.
+	waiter: Sehr Gerne.
+	
+	Er geht zurück in Richtung Küche.
+	
+	l: Gute Idee, mal was neues auszuprobieren.
+	l: Ich komme mir grad etwas langweilig vor.
+	p: Es gibt hier bestimmt noch viele Gelegenheiten, nicht langweilig zu sein.
+	l: Hehe. Ich seh das mal als Herausforderung.
+
+	discover_tower()
+
+	p: Dankeschön. Sieht sehr lecker aus.
+
+beat choose_surprise_breakfast
+	p: Ich möchte heute mal was Neues probieren. Überraschen Sie mich.
+	waiter: Oh, da hab ich etwas ganz besonderes für Sie.
+
+	Er geht grinsend zurück in Richtung Küche.
+
+	l: Da bin ich ja mal gespannt. Ob das so eine gute Idee war.
+	p: Croissant? Mit den ganzen gehärteten Fetten im Blätterteig. Eher nicht.
+	l: Hahaha. Genau.
+	l: Hast du seinen den Gesichtsausdruck gesehen?
+	l: Ich freu mich schon.
+
+	discover_tower()
+
+	Der Kellner stellt dir einen Teller hin mit etwas, das wie eine halbe Frucht aussieht.
+
+	Aussen hat sie scharfe Stacheln. Innen ist sie feurig rot.
+
+	Er legt einen Teelöffel dazu und einen kleinen Gewürzstreuer.
+
+	p: In... teressant. Und was ist das genau?
+
+	Der Kellner grinst nur schelmisch und zwinkert Livia zu.
+
+	waiter: Ich wünsche guten Appetit.
+	
+
+
+beat discover_tower
+	p: Schau mal da bei dem Kirchturm.
+	p: Es sieht aus als könnte man da hochsteigen.
+	l: Oh ja! Da hat man bestimmt eine wunderbare Aussicht auf die Insel und die Bucht.
+
+	Der Kellner kommt mit Essen und Trinken zurück.
+
+	l: Gustavo, kann man den Kirchturm besichtigen.
+	waiter: Ja es gibt eine schmale Wendeltreppe die nach oben führt.
+	waiter: Aber für Kaffee und Croissant Gäste ist das wahrscheinlich etwas zu abenteuerlich.
+	p: Hehe, das ist ein Argument.
+	l: Hmpfh. Das wird sich nachher gleich zeigen.
+	waiter: Aber erstmal Ihr Essen.
+	waiter: Für die Señorita.
+	l: Danke.
+	waiter: Und für den Señor.
+
+beat visit_tower
+
 

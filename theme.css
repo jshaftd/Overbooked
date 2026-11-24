@@ -78,7 +78,7 @@
 	/* ---- palette ------------------------------------------------------ */
 	--c-text: #f0f0ff;
 	--c-muted: #9a9ab0;
-	--c-accent: #b89fff;
+	--c-accent: #43fcf7;
 	--c-panel: #10101a;
 	--c-slot: #2a2a44;
 	--c-slot-border: #5a5a88;
@@ -150,7 +150,8 @@
    block (see `DomUi.applyMenuBackdrop`), so it has no rule of its own here. */
 
 .ui-screen[data-screen="config"] .ui-scrim,
-.ui-screen[data-screen="saveload"] .ui-scrim {
+.ui-screen[data-screen="saveload"] .ui-scrim,
+.ui-screen[data-screen="help"] .ui-scrim {
 	background: rgba(16, 16, 26, 0.55);
 }
 
@@ -195,6 +196,15 @@
 	gap: 24px;
 }
 
+/* The help screen carries more rows than a preference or slot pane, so it takes
+   less bottom padding (and the list gives up its own spacing below) to fit the
+   whole reference above the Back button at 1080. */
+.ui-body--help {
+	justify-content: flex-start;
+	padding: 50px 120px 70px;
+	gap: 20px;
+}
+
 .ui-body--pause {
 	flex-direction: row;
 	align-items: stretch;
@@ -213,7 +223,8 @@
 }
 
 .ui-body--config .ui-title,
-.ui-body--saveload .ui-title {
+.ui-body--saveload .ui-title,
+.ui-body--help .ui-title {
 	font-size: 56px;
 }
 
@@ -312,7 +323,7 @@
 	background-image: url("gui/sidebar/selection.png");
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
-	color: #ffb6c1;
+	color: #FB93D7;
 	outline: none;
 }
 
@@ -384,6 +395,11 @@
 	mask-image: url("assets/shared/icons/power.svg");
 }
 
+.ui-menu-icon--question {
+	-webkit-mask-image: url("assets/shared/icons/question.svg");
+	mask-image: url("assets/shared/icons/question.svg");
+}
+
 .ui-menu-divider {
 	width: 252px;
 	height: 2px;
@@ -402,8 +418,8 @@
    The in-game menu is the same dark column as the start menu, but flat and
    split from the content column by a hairline. Its entries are plain
    `.ui-menu-item` rows (see the start menu above), so History / Save / Load /
-   Preferences / Notifications / Main Menu / Quit share those icon rows and
-   their hover overlay; the active pane is highlighted white. Return sits
+   Preferences / Notifications / Main Menu / Help / Quit share those icon rows
+   and their hover overlay; the active pane is highlighted white. Return sits
    alone at the foot of the column. */
 
 .ui-pause-sidebar {
@@ -636,6 +652,64 @@
 	margin: 0;
 	font-size: 32px;
 	color: var(--c-muted);
+}
+
+/* ---- help -----------------------------------------------------------
+   The pause overlay's shortcut reference. Each group is a heading over a
+   two-column grid, laid out like the reference help page: the key sits in
+   the right-aligned accent column and its description starts a fixed gap
+   later, so a longer key ("Page Down") never shoves the text around. A `dl`
+   auto-flows each `dt` beside its `dd`, so the markup stays a flat list of
+   pairs with no per-row wrapper. */
+
+.ui-view[data-view="help"] {
+	gap: 28px;
+}
+
+/* The standalone Help screen has no `.ui-view` wrapper to scroll, so the list
+   scrolls itself and keeps the Back button pinned at the foot. */
+.ui-body--help .ui-help {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+}
+
+.ui-help {
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+	width: min(1100px, 100%);
+}
+
+.ui-help-heading {
+	margin: 0 0 18px;
+	font-size: 26px;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--c-muted);
+}
+
+.ui-help-rows {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	column-gap: 40px;
+	row-gap: 16px;
+	margin: 0;
+}
+
+.ui-help-rows dt {
+	text-align: right;
+	font-size: 28px;
+	font-weight: 600;
+	color: var(--c-accent);
+	white-space: nowrap;
+}
+
+.ui-help-rows dd {
+	margin: 0;
+	font-size: 28px;
+	color: var(--c-text);
 }
 
 /* ---- change notifications ------------------------------------------- */

@@ -6,7 +6,8 @@ beat test_stat_popup
 	Du nimmst die erst beste und willst gerade weitergehen.
 	
 	l.attraction += 5
-
+	variableNotify("livia", "attraction", "+5")
+	
 	l: Wie hast du das gerade gemacht?
 	
 	choice

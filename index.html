@@ -385,8 +385,8 @@
 
 		Buttons carry their intent as data attributes so no selector logic lives
 		in the markup:
-		  data-action  new-game | open-load | open-config | quit
-		               | close-config | close-saveload     (wired to the handlers)
+		  data-action  new-game | open-load | open-config | open-help | quit
+		               | close-config | close-saveload | close-help   (wired to the handlers)
 		  data-nav     pause sidebar panes                 (wired to DomUi)
 
 		An element with no data-action is inert: wireActions never sees it, so it
@@ -446,6 +446,10 @@
 							<span class="ui-menu-icon ui-menu-icon--bell" aria-hidden="true"></span>
 							<span class="ui-menu-label">Notifications</span>
 						</button>
+						<button type="button" class="ui-menu-item" data-action="open-help">
+							<span class="ui-menu-icon ui-menu-icon--question" aria-hidden="true"></span>
+							<span class="ui-menu-label">Help</span>
+						</button>
 						<button type="button" class="ui-menu-item" data-action="quit">
 							<span class="ui-menu-icon ui-menu-icon--power" aria-hidden="true"></span>
 							<span class="ui-menu-label">Quit</span>
@@ -485,6 +489,20 @@
 		</section>
 	</template>
 
+	<template id="tpl-help">
+		<section class="ui-screen" data-screen="help">
+			<div class="ui-bg"></div>
+			<div class="ui-scrim"></div>
+			<div class="ui-body ui-body--help">
+				<h1 class="ui-title">Help</h1>
+				<div class="ui-help" data-help></div>
+				<div class="ui-footer">
+					<button type="button" class="ui-btn" data-action="close-help">Back</button>
+				</div>
+			</div>
+		</section>
+	</template>
+
 	<template id="tpl-pause">
 		<section class="ui-screen" data-screen="pause">
 			<div class="ui-bg"></div>
@@ -517,6 +535,10 @@
 							<span class="ui-menu-icon ui-menu-icon--house" aria-hidden="true"></span>
 							<span class="ui-menu-label">Main Menu</span>
 						</button>
+						<button type="button" class="ui-menu-item" data-nav="help">
+							<span class="ui-menu-icon ui-menu-icon--question" aria-hidden="true"></span>
+							<span class="ui-menu-label">Help</span>
+						</button>
 						<button type="button" class="ui-menu-item" data-nav="quit">
 							<span class="ui-menu-icon ui-menu-icon--power" aria-hidden="true"></span>
 							<span class="ui-menu-label">Quit</span>
@@ -548,6 +570,13 @@
 					<div class="ui-view" data-view="history">
 						<h1 class="ui-title">History</h1>
 						<div class="ui-history"></div>
+					</div>
+					<div class="ui-view" data-view="help">
+						<h1 class="ui-title">Help</h1>
+						<!-- The shortcut groups are built by DomUi.buildHelpSections from
+						     one list, so this pane and the standalone Help screen cannot
+						     drift apart. -->
+						<div class="ui-help" data-help></div>
 					</div>
 				</div>
 			</div>

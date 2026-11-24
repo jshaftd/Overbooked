@@ -1,0 +1,44 @@
+import chapterTitleCard
+import char_images
+import characters
+// import day01
+
+beat day00
+	// Spielst du das erste mal?
+	-> tutorial
+
+	choice
+		Ja. ich möchte das Tutorial anschauen
+			-> tutorial
+		Nein, ich weiss wie es geht
+			// -> day01
+
+beat tutorial
+	+scene bg black
+	Du hörst eine angenehme Stimme direkt vor dir.
+
+	Nur mühsam gelingt es dir, die Augen zu öffnen.
+
+	+scene bg "0xb0b0b2"
+
+	+show teacher bendover fit native
+	+with longdissolve
+	+transform teacher translate(0,2804) over 8.0 ease quadinout
+	
+	teacher.name := ???
+	
+	teacher: Guten Morgen!
+	teacher: Herzlich willkommen auch an alle die gerade aufgewacht sind.
+	
+	+show teacher bendover_smile
+	+wait click
+
+	Eine Frau, die wie eine Lehrerin aussieht steht vor dir.
+	
+	teacher.name = Lehrerin
+	teacher: Ja ich bin eine Lehrerin.
+	teacher: Auch wenn ich keine dicke Brille trage.
+
+	teacher: Ich glaube wir sollte die letzten Inhalte nochmal wiederholen.
+	teacher: Oder?
+

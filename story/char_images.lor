@@ -1,0 +1,5 @@
+state
+	character_images:
+		teacher:
+			bendover: assets/day00/sprites/teacher/bendover.webp
+			bendover_smile: assets/day00/sprites/teacher/bendover_smile.webp
