@@ -1,17 +1,16 @@
 import chapterTitleCard
 import char_images
 import characters
-// import day01
+import day01
 
 beat day00
-	// Spielst du das erste mal?
-	-> tutorial
+	Spielst du das erste mal?
 
 	choice
 		Ja. ich möchte das Tutorial anschauen
 			-> tutorial
 		Nein, ich weiss wie es geht
-			// -> day01
+			-> day01
 
 beat tutorial
 	+scene bg black
@@ -35,10 +34,20 @@ beat tutorial
 
 	Eine Frau, die wie eine Lehrerin aussieht steht vor dir.
 	
-	teacher.name = Lehrerin
-	teacher: Ja ich bin eine Lehrerin.
+	teacher.name := Lehrerin
+	teacher: Gut erkannt. Ja ich bin eine Lehrerin.
 	teacher: Auch wenn ich keine dicke Brille trage.
 
-	teacher: Ich glaube wir sollte die letzten Inhalte nochmal wiederholen.
-	teacher: Oder?
+	Du schaust nach links und rechts.
 
+	Ja das ist ein Klassenzimmer.
+
+	+show teacher bendover fit native transform translate(0,2804)
+
+	teacher: Ich kann dir ein bisschen Zeiten wie das hier funktioniert.
+	teacher: Mit Esc kannst du das Menü aufrufen. Dort gibt es einen 'Hilfe' Button der die Maus und Tastatur Kürzel anzeigt.
+	teacher: Die Hauptcharaktere haben vereinfacht zwei Gefühle für dich.
+	teacher: Vertrauen und Attraktion
+	teacher: Im Verlauf der Geschichte und durch deine Entscheidungen verändern sich diese Gefühle.
+
+	-> day01

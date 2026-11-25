@@ -89,7 +89,7 @@ beat cafe
 		Das Gleiche
 			l.trust += 1
 			day02_breakfast_selection := 0
-		  -> choose_same_breakfast
+			-> choose_same_breakfast
 		
 		Nach Empfehlung fragen
 			l.trust += 1
@@ -97,7 +97,7 @@ beat cafe
 			-> choose_breakfast_suggestion
 
 		Überraschung
-		 	l.attraction += 1
+			l.attraction += 1
 			day02_breakfast_selection := 2
 			-> choose_surprise_meal
 
@@ -156,11 +156,81 @@ beat choose_surprise_breakfast
 
 	p: In... teressant. Und was ist das genau?
 
-	Der Kellner grinst nur schelmisch und zwinkert Livia zu.
-
-	waiter: Ich wünsche guten Appetit.
+	waiter: Ein absoluter Geheimtipp. Ich wünsche guten Appetit.
 	
+	Der Kellner grinst nur schelmisch, zwinkert Livia zu und geht wieder.
 
+	p: "Goldregen"? Von diesem Gewürz hab ich auch noch nie gehört.
+
+	Du streust ein bisschen auf die Frucht. Es sieht aus wie kleine goldene Samen.
+
+	Dann nimmst du den Löffel und probierst ein kleines Stückchen.
+
+	l: Und wie schmeckt es.
+
+	choice
+		Du schmeckst nichts
+			p: Hmm...
+			p: Irgendwie nach gar nichts.
+
+		Machs ein bisschen spannend.
+			p: Also so ein bisschen wie...
+			p: Hmm...
+			l: Wie was?
+			p: Nein, doch ganz anders.
+			p: Oh, jetzt ändert sich der Geschmack.
+			p: Jetzt ist es eher wie...
+			p: Wie kann ich das beschreiben.
+			l: Ist es süß oder sauer oder salzig?
+			p: Nein, keines davon.
+			p: Oder von allem ein bisschen.
+			p: Aber dann auch noch...
+			l: Jetzt bin ich echt neugierig.
+	
+	p: Moment. Jetzt spüre ich ein warmes Gefühl das sich vom Mund ausbreitet.
+	p: Oh, Oh. Huh. Das wird jetzt aber sehr warm.
+	l: Dein Kopf wird grad ein bisschen rot.
+	p: Fühlt sich aber gut an. Ich probier nochmal ein Stückchen.
+	l: Vielleicht solltest du das langsam angehen.
+	p: Mmmh. Das schmeckt jetzt echt gut.
+	p: Mmmmmmmmh...
+	p: MMMMMMMmmmmmh...
+
+	Als du wieder zu dir kommst, schaut dich Livia mit großen Augen an.
+
+	l: Was war das jetzt?
+	Du schaust nach unten. Es ist nur noch die Schale der Frucht übrig.
+
+	Du spürst nur noch die Reste einens himmlischen Geschmacks im Mund.
+
+	p: Ich war wohl ein Moment woanders.
+	l: Ja das sah grad so aus als hätte deine Seele den Körper verlassen.
+	l: Hat mich ehrlich gesagt ein bisschen erschreckt.
+	p: Mir fehlen die letzten Paar Minuten.
+	p: Aber war gut.
+	l: Woran erinnerst du dich?
+	p: Da war diese Wärme und der Geschmack...
+	p: Als ob ein Engel in meinem Mund explodiert.
+	p: Und die Energie durch meinen ganzen Körper zuckt.
+	p: Jetzt hab ich das Gefühl als ob ich 10cm über dem Stuhl schwebe.
+	l: Ein Engel? Hahaha, an deinen Metaphern musst du noch arbeiten.
+	p: Ich wollte dich eigentlich auch probieren lassen.
+	p: Leider ist nichts mehr da.
+	l: Hab ich auch gemerkt.
+
+	Du winkst dem Kellner. Er kommt.
+
+	p: Ok, Gustavo. Was war das für eine Frucht?
+	waiter: Wir nennen Sie 'Pera del Dios'. Sie wächst nur in kleinen Mengen in einem versteckten Tal auf der Insel.
+	waiter: Soweit ich weiss ist das der einzige Ort auf der Welt.
+	waiter: Früher war sie dein wichtiger Bestandteil der religiösen Rituale der Insel.
+	waiter: Heute wird diese Religion aber nicht mehr praktiziert.
+	waiter: Bei ganz besonderen feierlichen Anlässen wird sie jetzt ausgewählten Gästen serviert.
+	p: Ich fühle mich geehrt. Und was hat mich zu einem dieser ausgewählten Gäste gemacht?
+	waiter: Ehrlich gesagt. Der eigentlich Ausgewählte hat spontan einen Rückzieher gemacht.
+	waiter: Und ich wollte die Frucht nicht verderben lassen.
+
+	-> visit_tower
 
 beat discover_tower
 	p: Schau mal da bei dem Kirchturm.
@@ -180,5 +250,5 @@ beat discover_tower
 	waiter: Und für den Señor.
 
 beat visit_tower
-
+	Ihr geht über den Marktplatz zum Kirchturm
 
