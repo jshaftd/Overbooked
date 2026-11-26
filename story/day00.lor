@@ -4,12 +4,12 @@ import characters
 import day01
 
 beat day00
-	Spielst du das erste mal?
+	Möchtest du die Einführung anschauen?
 
 	choice
-		Ja. ich möchte das Tutorial anschauen
+		Ja gerne.
 			-> tutorial
-		Nein, ich weiss wie es geht
+		Nein, kenn ich schon.
 			-> day01
 
 beat tutorial
@@ -20,31 +20,53 @@ beat tutorial
 
 	+scene bg "0xb0b0b2"
 
-	+show teacher bendover fit native
+	+show cg teacher_bendover transform translate(0,-900)
 	+with longdissolve
-	+transform teacher translate(0,2804) over 8.0 ease quadinout
+	+transform cg translate(0,900) over 4.0 ease quadinout
 	
 	teacher.name := ???
 	
-	teacher: Guten Morgen!
+	teacher: Guten Morgen?
 	teacher: Herzlich willkommen auch an alle die gerade aufgewacht sind.
 	
-	+show teacher bendover_smile
+	Eine Frau, die wie eine Lehrerin aussieht steht vor dir.
+
+	+transform cg translate(0,300) over 1.0 ease quadinout
 	+wait click
 
-	Eine Frau, die wie eine Lehrerin aussieht steht vor dir.
-	
 	teacher.name := Lehrerin
+	teacher: Nicht ablenken lassen!
+
+	+transform cg translate(0,900) over 0.5 ease quadinout
+	
 	teacher: Gut erkannt. Ja ich bin eine Lehrerin.
+	
+	+show cg teacher_bendover_smile
+	
 	teacher: Auch wenn ich keine dicke Brille trage.
 
-	Du schaust nach links und rechts.
+	Du befindest dich in einer Art Klassenzimmer.
 
-	Ja das ist ein Klassenzimmer.
+	+show cg teacher_bendover transform translate(0,900)
 
-	+show teacher bendover fit native transform translate(0,2804)
+	teacher: Ich zeig dir sehr gerne mehr.
 
-	teacher: Ich kann dir ein bisschen Zeiten wie das hier funktioniert.
+	+transform cg translate(0,300) over 1.0 ease quadinout
+	+wait 1.0
+
+	teacher: Ich meinte natürlich, wie das Spiel funktioniert.
+	
+	+transform cg translate(0,900) over 0.5 ease quadinout
+	
+	+wait 0.5
+	+show cg teacher_bendover_smile
+	
+
+	teacher: Bereit?
+
+	+scene bg classroom
+	+with dissolve
+
 	teacher: Mit Esc kannst du das Menü aufrufen. Dort gibt es einen 'Hilfe' Button der die Maus und Tastatur Kürzel anzeigt.
 	teacher: Die Hauptcharaktere haben vereinfacht zwei Gefühle für dich.
 	teacher: Vertrauen und Attraktion

@@ -1,0 +1,7 @@
+state
+	images:
+		bg:
+			classroom: assets/day00/bg/classroom01.jpg
+		cg:
+			teacher_bendover: assets/day00/cg/teacher_in_classroom_bendover.jpg
+			teacher_bendover_smile: assets/day00/cg/teacher_in_classroom_bendover_smile.jpg
