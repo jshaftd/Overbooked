@@ -116,6 +116,9 @@ state
 			paddingY: 12         // above and below the label
 			lineHeight: 1.4      // label line box, x the role's size
 			cornerRadius: 8
+			// Choice button background image, scaled to the button's height
+			// and centred. Leave empty for the flat colors.buttonBg fill.
+			background: "assets/gui/box_background.webp"
 
 		// ---- dialogue box ------------------------------------------------
 		// Chrome (width / height / margin / padding / radius / nameTop /
@@ -155,6 +158,7 @@ state
 			buttonBg: "#2a2a44"       // choice buttons
 			buttonHover: "#3d3d63"
 			buttonBorder: "#5a5a88"
+			buttonHoverText: "#43fcf7" // choice button label on hover
 			dialogueBg: "#101a13"
 			dialogueAlpha: 0.66
 			dialogueBorder: "#444466"

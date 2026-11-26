@@ -1,5 +1,7 @@
 state
 	character_images:
-		teacher:
-			bendover: assets/day00/sprites/teacher/bendover.webp
-			bendover_smile: assets/day00/sprites/teacher/bendover_smile.webp
+		mika:
+			listen_up: assets/day00/sprites/mika/mika_listen_up.webp
+			neutral: assets/day00/sprites/mika/mika_neutral.webp
+			thinking: assets/day00/sprites/mika/mika_thinking.webp
+			waiting: assets/day00/sprites/mika/mika_waiting.webp

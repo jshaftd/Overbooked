@@ -7,10 +7,11 @@ character l
 	name: Livia
 	color: "#feecb2"
 	avatar:  assets/shared/avatars/livia.jpg
+	info: "Met at the supermarket"
 	attraction: 0
 	trust: 0
 
-character teacher
+character mika
 	name: Lehrerin
 	color: "#fa2c8d"
 

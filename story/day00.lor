@@ -20,56 +20,59 @@ beat tutorial
 
 	+scene bg "0xb0b0b2"
 
-	+show cg teacher_bendover transform translate(0,-900)
+	+show cg mika_bendover transform translate(0,-900)
 	+with longdissolve
 	+transform cg translate(0,900) over 4.0 ease quadinout
 	
-	teacher.name := ???
+	mika.name := ???
 	
-	teacher: Guten Morgen?
-	teacher: Herzlich willkommen auch an alle die gerade aufgewacht sind.
+	mika: Guten Morgen?
+	mika: Herzlich willkommen auch an alle die gerade aufgewacht sind.
 	
 	Eine Frau, die wie eine Lehrerin aussieht steht vor dir.
 
 	+transform cg translate(0,300) over 1.0 ease quadinout
 	+wait click
 
-	teacher.name := Lehrerin
-	teacher: Nicht ablenken lassen!
+	mika.name := Lehrerin
+	mika: Nicht ablenken lassen!
 
 	+transform cg translate(0,900) over 0.5 ease quadinout
 	
-	teacher: Gut erkannt. Ja ich bin eine Lehrerin.
+	mika: Gut erkannt. Ja ich bin eine Lehrerin.
 	
-	+show cg teacher_bendover_smile
+	+show cg mika_bendover_smile
 	
-	teacher: Auch wenn ich keine dicke Brille trage.
+	mika: Auch wenn ich keine dicke Brille trage.
 
 	Du befindest dich in einer Art Klassenzimmer.
 
-	+show cg teacher_bendover transform translate(0,900)
+	+show cg mika_bendover transform translate(0,900)
 
-	teacher: Ich zeig dir sehr gerne mehr.
+	mika: Ich zeig dir sehr gerne mehr.
 
 	+transform cg translate(0,300) over 1.0 ease quadinout
-	+wait 1.0
+	+wait click
 
-	teacher: Ich meinte natürlich, wie das Spiel funktioniert.
+	mika: Ich meinte natürlich, wie das Spiel funktioniert.
 	
 	+transform cg translate(0,900) over 0.5 ease quadinout
 	
 	+wait 0.5
-	+show cg teacher_bendover_smile
+	+show cg mika_bendover_smile
 	
-
-	teacher: Bereit?
+	mika: Bereit?
 
 	+scene bg classroom
+	+show mika neutral
 	+with dissolve
 
-	teacher: Mit Esc kannst du das Menü aufrufen. Dort gibt es einen 'Hilfe' Button der die Maus und Tastatur Kürzel anzeigt.
-	teacher: Die Hauptcharaktere haben vereinfacht zwei Gefühle für dich.
-	teacher: Vertrauen und Attraktion
-	teacher: Im Verlauf der Geschichte und durch deine Entscheidungen verändern sich diese Gefühle.
+	mika: Mit Esc kannst du das Menü aufrufen. Dort gibt es einen 'Hilfe' Button der die Maus und Tastatur Kürzel anzeigt.
+	+show mika listen_up
+	mika: Die Hauptcharaktere haben vereinfacht zwei Gefühle für dich.
+	+show mika thinking
+	mika: Vertrauen und Attraktion
+	+show mika waiting
+	mika: Im Verlauf der Geschichte und durch deine Entscheidungen verändern sich diese Gefühle.
 
 	-> day01
