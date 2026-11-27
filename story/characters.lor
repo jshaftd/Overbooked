@@ -12,8 +12,13 @@ character l
 	trust: 0
 
 character mika
-	name: Lehrerin
+	name: Mika
 	color: "#fa2c8d"
+	info: Teaches you stuff
+	attraction: 0
+	trust: 0
+	characterCardBackground: assets/gui/character_card_background_01.webp
+	characterCardPortrait: assets/gui/character_card_mika.webp
 
 character clerk
 	name: Empfangsmitarbeiter

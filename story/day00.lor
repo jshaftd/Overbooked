@@ -44,6 +44,9 @@ beat tutorial
 	+show cg mika_bendover_smile
 	
 	mika: Auch wenn ich keine dicke Brille trage.
+	
+	mika.name := Mika
+	mika: Mein Name ist Mika.
 
 	Du befindest dich in einer Art Klassenzimmer.
 
@@ -64,15 +67,26 @@ beat tutorial
 	mika: Bereit?
 
 	+scene bg classroom
-	+show mika neutral
+	+show mika thinking
 	+with dissolve
 
-	mika: Mit Esc kannst du das Menü aufrufen. Dort gibt es einen 'Hilfe' Button der die Maus und Tastatur Kürzel anzeigt.
+	mika: Also wo fangen wir an?
+	mika: Genau. Die Steuerung.
+	mika: Weiter gehts mit Links-Klick, Leertaste oder Enter.
+	mika: Zum Menü gehts mit Rechts-Klick oder S.
+	mika: Rollback zurück mit dem Mausrad oder bild^
+	mika: Mit dem Hilfe Button im Menü kannst du nochmal alles Tastatur und Maus Kommandos nachschauen.
+	mika: Wenn du neue Personen kennenlernst wird eine Charakter Karte erstellt.
+	mika: Darauf siehst du die Informationen zu dieser Person.
+	mika: Rechts oben auf dem Bildschirm erscheint ein Karten Symbol.
+	mika: Mit Klick kannst du dir die Karten anzeigen lassen.
 	+show mika listen_up
-	mika: Die Hauptcharaktere haben vereinfacht zwei Gefühle für dich.
+	mika: Durch Entscheidungen kannst du beeinflussen wie es weitergeht.
+	mika: Manchmal beeinflusst du dabei auch was die Charaktere für dich empfinden.
+	mika: Damit es übersichtlich bleibt haben wir das auf zwei Gefühle reduziert.
 	+show mika thinking
 	mika: Vertrauen und Attraktion
 	+show mika waiting
-	mika: Im Verlauf der Geschichte und durch deine Entscheidungen verändern sich diese Gefühle.
+	mika: 
 
 	-> day01

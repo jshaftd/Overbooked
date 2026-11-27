@@ -328,10 +328,18 @@
 <body>
 	<div id="app">
 		<div id="pixi-mount"></div>
-		<!-- Game menus (boot / start / config / save-load / pause) are DOM here,
-		     above the canvas. The dialogue box, choice list and stage text stay
-		     on the canvas. Styled by theme.css. -->
-		<div id="ui-overlay"></div>
+		<!-- Game menus (boot / start / config / save-load / help / cards / pause)
+		     are DOM here, above the canvas. The dialogue box, choice list and
+		     stage text stay on the canvas. Styled by theme.css. -->
+		<div id="ui-overlay">
+			<!-- Floating player control: opens the character-card viewer. It is
+			     not a screen itself, so `hideAll` never removes it; DomUi shows
+			     it only while playback is live and no menu is open, and the
+			     icon is a mask so it takes the button's colour. -->
+			<button id="character-card-button" class="ui-card-button" type="button" aria-label="Character cards" aria-expanded="false">
+				<span class="ui-card-button-icon" aria-hidden="true"></span>
+			</button>
+		</div>
 		<div id="prompt-overlay"><input id="prompt-input" type="text" spellcheck="false" autocomplete="off" autocapitalize="off"/></div>
 		<div id="play-overlay">
 			<span class="title">Playing</span>
@@ -500,6 +508,51 @@
 					<button type="button" class="ui-btn" data-action="close-help">Back</button>
 				</div>
 			</div>
+		</section>
+	</template>
+
+	<!--
+		One character card, cloned as many times as the screen shows. Every
+		layer is a full 612x960 sheet (`theme.css` scales them together with
+		`container-type`), so the art lines up without per-image placement:
+		background -> the shared gold bars -> the character portrait -> the
+		stats text -> the shared border (which carries the two translucent
+		name bands) -> the name and subtitle text, drawn above the border so
+		the sheet cannot wash the type out. The two character-specific images
+		are `<img>` elements with no `src`; the caller sets `src` from the
+		character's `characterCardBackground` / `characterCardPortrait`.
+
+		The data hooks are `data-card-*` on the cloned elements. A caller fills
+		them after cloning (name, subtitle, attraction/trust values and labels)
+		and drops the card into a `.ui-char-cards` row; adding a second card is
+		just a second clone. The template is inert until then, like every other
+		`tpl-*`.
+	-->
+	<template id="tpl-character-card">
+		<article class="ui-char-card">
+			<img class="ui-char-card-bg" data-card-background alt=""/>
+			<div class="ui-char-card-bars" aria-hidden="true"></div>
+			<img class="ui-char-card-portrait" data-card-portrait alt=""/>
+			<div class="ui-char-card-stats">
+				<span class="ui-char-card-label" data-card-attraction-label data-stat="attraction">Attraction</span>
+				<span class="ui-char-card-value" data-card-attraction data-stat="attraction">0</span>
+				<span class="ui-char-card-label" data-card-trust-label data-stat="trust">Trust</span>
+				<span class="ui-char-card-value" data-card-trust data-stat="trust">0</span>
+			</div>
+			<div class="ui-char-card-frame" aria-hidden="true"></div>
+			<div class="ui-char-card-band ui-char-card-band--name">
+				<span class="ui-char-card-name" data-card-name></span>
+			</div>
+			<div class="ui-char-card-band ui-char-card-band--subtitle">
+				<span class="ui-char-card-subtitle" data-card-subtitle></span>
+			</div>
+		</article>
+	</template>
+
+	<template id="tpl-cards">
+		<section class="ui-screen" data-screen="cards">
+			<div class="ui-scrim"></div>
+			<div class="ui-char-cards"></div>
 		</section>
 	</template>
 

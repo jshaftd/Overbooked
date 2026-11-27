@@ -50,6 +50,14 @@
 }
 
 @font-face {
+	font-family: "Oblata Display";
+	src: url("fonts/OblataDisplayRegular-Zp8o8.otf") format("opentype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
 	font-family: "SpecialElite-Regular";
 	src: url("fonts/SpecialElite-Regular.ttf") format("truetype");
 	font-weight: 400;
@@ -153,6 +161,12 @@
 .ui-screen[data-screen="saveload"] .ui-scrim,
 .ui-screen[data-screen="help"] .ui-scrim {
 	background: rgba(16, 16, 26, 0.55);
+}
+
+.ui-screen[data-screen="cards"] .ui-scrim {
+	background: rgba(8, 8, 14, 0.72);
+	-webkit-backdrop-filter: blur(3px);
+	backdrop-filter: blur(3px);
 }
 
 .ui-screen[data-screen="pause"] .ui-scrim {
@@ -810,4 +824,211 @@
 
 .ui-notify-delta--down {
 	color: #ff8080;
+}
+
+/* ---- character cards ------------------------------------------------
+   One card is four full-bleed sheets stacked in `#tpl-character-card`:
+   the character background, the shared gold bars, the character portrait
+   and the shared floral / circuit border. Every layer is authored on the
+   same 612x960 canvas, so the only placement here is for the text.
+
+   The card is a size container and every length below is in `cqw` (1cqw =
+   1% of the card's width). That makes the whole composition scale as one
+   piece: a caller sizes the card, and the bars, coins, bands and type all
+   follow. The comment values are the reference pixels at 612px wide.
+
+   A `.ui-char-cards` row is the intended host: it centres as many clones as
+   it is given, and the row is pointer-transparent so cards never eat a click
+   meant for the stage. */
+
+/* The player-facing toggle, top right. It is deliberately below the developer
+   play toolbar (top 56px) so the two never collide; in a release build that
+   just leaves a little breathing room above it. */
+.ui-card-button {
+	position: absolute;
+	top: 56px;
+	right: 20px;
+	width: 64px;
+	height: 64px;
+	padding: 0;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid rgba(255, 255, 255, 0.18);
+	border-radius: 16px;
+	background: rgba(16, 16, 26, 0.55);
+	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+	color: #f0f0ff;
+	cursor: pointer;
+	pointer-events: auto;
+	z-index: 6;
+	transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.ui-card-button.visible {
+	display: flex;
+}
+
+.ui-card-button:hover,
+.ui-card-button:focus-visible {
+	background: rgba(30, 30, 46, 0.82);
+	border-color: rgba(251, 147, 215, 0.75);
+	color: #ffffff;
+	outline: none;
+}
+
+.ui-card-button:active {
+	transform: scale(0.96);
+}
+
+.ui-card-button-icon {
+	width: 40px;
+	height: 40px;
+	background-color: currentColor;
+	-webkit-mask: url("assets/shared/icons/cards.svg") center / contain no-repeat;
+	mask: url("assets/shared/icons/cards.svg") center / contain no-repeat;
+}
+
+.ui-char-cards {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 12px;
+	pointer-events: none;
+	z-index: 6;
+}
+
+.ui-char-card {
+	position: relative;
+	flex: none;
+	width: 612px;
+	max-width: 100%;
+	aspect-ratio: 612 / 960;
+	container-type: inline-size;
+	pointer-events: none;
+}
+
+/* The four art sheets. Background and portrait are per character (`<img>`,
+   their `src` set by the caller); the bars and border are shared art and
+   live here with the rest of the look. */
+.ui-char-card-bg,
+.ui-char-card-portrait,
+.ui-char-card-bars,
+.ui-char-card-frame {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.ui-char-card-bg,
+.ui-char-card-portrait {
+	display: block;
+	object-fit: cover;
+}
+
+.ui-char-card-bars {
+	background: url("assets/gui/character_card_bars_stats.webp") center / 100% 100% no-repeat;
+}
+
+.ui-char-card-frame {
+	background: url("assets/gui/character_card_border.webp") center / 100% 100% no-repeat;
+}
+
+/* ---- stats ----------------------------------------------------------
+   Labels sit on the gold bars, values on the coins. Anchoring the value by
+   its own centre lets a two-digit and a three-digit number share the coin. */
+
+.ui-char-card-stats {
+	position: absolute;
+	inset: 0;
+}
+
+.ui-char-card-label {
+	position: absolute;
+	left: 15.686cqw; /* 96px */
+	font-family: "Oblata Display", "Times New Roman", serif;
+	font-size: 6.29cqw; /* 38.5px */
+	line-height: 1;
+	color: #2b3838;
+	white-space: nowrap;
+}
+
+.ui-char-card-label[data-stat="attraction"] {
+	top: 13.562cqw; /* 83px, just above the first bar */
+}
+
+.ui-char-card-label[data-stat="trust"] {
+	top: 32.843cqw; /* 201px, just above the second bar */
+}
+
+.ui-char-card-value {
+	position: absolute;
+	left: 22.876cqw; /* 140px, the coin centre */
+	transform: translate(-50%, -50%);
+	font-family: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+	font-size: 7.843cqw; /* 48px */
+	font-weight: 600;
+	line-height: 1;
+	color: #2b3838;
+	white-space: nowrap;
+}
+
+.ui-char-card-value[data-stat="attraction"] {
+	top: 26.144cqw; /* 160px */
+}
+
+.ui-char-card-value[data-stat="trust"] {
+	top: 45.915cqw; /* 281px */
+}
+
+/* ---- name and subtitle ----------------------------------------------
+   The two translucent bands are part of `character_card_border.webp` (it
+   fades them out left-to-right), so they are not painted here. The text
+   sits *above* the border sheet, which is why these bands come after the
+   frame in the template: the border must not wash the type out. */
+
+.ui-char-card-band {
+	position: absolute;
+	left: 6.046cqw; /* 37px */
+	right: 0;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+	color: #2b3838;
+}
+
+.ui-char-card-band--name {
+	top: 98.203cqw; /* 601px */
+	height: 14.542cqw; /* 89px */
+	padding-left: 9.641cqw; /* text at 96px */
+}
+
+.ui-char-card-band--subtitle {
+	top: 114.379cqw; /* 700px */
+	height: 6.863cqw; /* 42px */
+	padding-left: 9.477cqw; /* text at 95px */
+}
+
+.ui-char-card-name {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-family: "Oblata Display", "Times New Roman", serif;
+	font-size: 13.725cqw; /* 84px */
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.ui-char-card-subtitle {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-family: "Oblata Display", "Times New Roman", serif;
+	font-size: 6.536cqw; /* 40px */
+	line-height: 1;
+	white-space: nowrap;
 }
