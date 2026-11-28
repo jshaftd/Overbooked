@@ -4,15 +4,19 @@ import characters
 import day01
 
 beat day00
-	Möchtest du die Einführung anschauen?
+	Wie möchtest du starten?
 
 	choice
-		Ja gerne.
-			-> tutorial
-		Nein, kenn ich schon.
+		Bedienungshinweise und Einführung.
+			-> introduction(true)
+		
+		Nur Einführung.
+		  -> introduction(false)
+		
+		Direkt ins Spiel
 			-> day01
 
-beat tutorial
+beat introduction(showInstructions)
 	+scene bg black
 	Du hörst eine angenehme Stimme direkt vor dir.
 
@@ -45,10 +49,9 @@ beat tutorial
 	
 	mika: Auch wenn ich keine dicke Brille trage.
 	
-	mika.name := Mika
 	mika: Mein Name ist Mika.
-
-	Du befindest dich in einer Art Klassenzimmer.
+	mika.name := Mika
+	addCard("mika")
 
 	+show cg mika_bendover transform translate(0,900)
 
@@ -71,7 +74,35 @@ beat tutorial
 	+with dissolve
 
 	mika: Also wo fangen wir an?
-	mika: Genau. Die Steuerung.
+	+show mika listen_up
+	if showInstructions
+		mika: Genau. Die allgemeine Steuerung.
+		instructions()
+	else
+		mika: Genau. Der Spielablauf.
+	
+	+show mika listen_up
+	mika: Durch Entscheidungen kannst du beeinflussen wie es weitergeht.
+	mika: Manchmal beeinflusst du dabei auch was die Charaktere für dich empfinden.
+	mika: Damit es übersichtlich bleibt haben wir das auf zwei Gefühle reduziert.
+	+show mika thinking
+	mika: Vertrauen und Attraktion
+	+show mika waiting
+	mika: Durch mehr Vertrauen möchte die Person mehr Zeit mit dir verbringen und du kannst sie besser kennenlernen.
+	mika: Vertrauen baust du auf wenn du nett zu der Person bist.
+	mika: Vertrauen wird reduziert wenn Entscheidungen triffst die nicht nett sind.
+	mika: Oder auch wenn du sie anlügst und es kommt raus.
+
+	mika: Attraktion wird gesteigert in dem du Dinge tust, die mutig oder bewundernswert sind.
+	mika: Auch wenn du selbstbewusst wirkst oder auch ein bisschen frech bist.
+	mika: Attraktion wird reduziert durch Respektlosigkeit, emotionale Unsicherheit oder mangelnde Integrität.
+	mika: Das hört sich jetzt schwierig an. Aber keine Angst.
+	mika: Es wird angezeigt wenn sich Attraktion oder Vertrauen bei der Person verändern. 
+
+	-> day01
+
+beat instructions
+	+show mika neutral
 	mika: Weiter gehts mit Links-Klick, Leertaste oder Enter.
 	mika: Zum Menü gehts mit Rechts-Klick oder S.
 	mika: Rollback zurück mit dem Mausrad oder bild^
@@ -80,13 +111,3 @@ beat tutorial
 	mika: Darauf siehst du die Informationen zu dieser Person.
 	mika: Rechts oben auf dem Bildschirm erscheint ein Karten Symbol.
 	mika: Mit Klick kannst du dir die Karten anzeigen lassen.
-	+show mika listen_up
-	mika: Durch Entscheidungen kannst du beeinflussen wie es weitergeht.
-	mika: Manchmal beeinflusst du dabei auch was die Charaktere für dich empfinden.
-	mika: Damit es übersichtlich bleibt haben wir das auf zwei Gefühle reduziert.
-	+show mika thinking
-	mika: Vertrauen und Attraktion
-	+show mika waiting
-	mika: 
-
-	-> day01
