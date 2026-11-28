@@ -911,6 +911,16 @@
 	pointer-events: none;
 }
 
+/* The art sheets are square, so the rounding lives on one wrapper: `overflow`
+   cuts every layer with the same curve, and the radius is in `cqw` (against
+   `.ui-char-card` above) so it scales with the card like the art does. */
+.ui-char-card-clip {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
+	border-radius: 5cqw; /* 30.6px at 612 wide */
+}
+
 /* The four art sheets. Background and portrait are per character (`<img>`,
    their `src` set by the caller); the bars and border are shared art and
    live here with the rest of the look. */
@@ -931,11 +941,11 @@
 }
 
 .ui-char-card-bars {
-	background: url("assets/gui/character_card_bars_stats.webp") center / 100% 100% no-repeat;
+	background: url("assets/shared/character_card/bars_stats.webp") center / 100% 100% no-repeat;
 }
 
 .ui-char-card-frame {
-	background: url("assets/gui/character_card_border.webp") center / 100% 100% no-repeat;
+	background: url("assets/shared/character_card/border.webp") center / 100% 100% no-repeat;
 }
 
 /* ---- stats ----------------------------------------------------------

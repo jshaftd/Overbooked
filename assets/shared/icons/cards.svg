@@ -1,15 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.05" stroke-linejoin="round">
-	<g transform="translate(0.4 0.6)">
-		<g transform="translate(-5.2 -1.4) rotate(-18 14.9 11.6)">
-			<rect x="8.5" y="4" width="12.8" height="15.2" rx="2"/>
-		</g>
-		<g transform="translate(-3.5 -0.95) rotate(-12 14.9 11.6)">
-			<rect x="8.5" y="4" width="12.8" height="15.2" rx="2"/>
-		</g>
-		<g transform="translate(-1.75 -0.5) rotate(-6 14.9 11.6)">
-			<rect x="8.5" y="4" width="12.8" height="15.2" rx="2"/>
-		</g>
-		<rect x="8.5" y="4" width="12.8" height="15.2" rx="2" transform="rotate(2 14.9 11.6)"/>
-	</g>
+<svg viewBox="0 0 340 300" width="340" height="300" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#000" stroke-width="9" stroke-linejoin="round" fill="#fff">
+    <rect x="25" y="40" width="195" height="240" rx="16" transform="rotate(17 240 302)"/>
+    <rect x="25" y="40" width="195" height="240" rx="16" transform="rotate(11 240 302)"/>
+    <rect x="25" y="40" width="195" height="240" rx="16" transform="rotate(5 240 302)"/>
+    <rect x="25" y="40" width="195" height="240" rx="16" transform="rotate(-10 122 160)"/>
+  </g>
 </svg>

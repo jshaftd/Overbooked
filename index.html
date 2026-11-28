@@ -530,21 +530,25 @@
 	-->
 	<template id="tpl-character-card">
 		<article class="ui-char-card">
-			<img class="ui-char-card-bg" data-card-background alt=""/>
-			<div class="ui-char-card-bars" aria-hidden="true"></div>
-			<img class="ui-char-card-portrait" data-card-portrait alt=""/>
-			<div class="ui-char-card-stats">
-				<span class="ui-char-card-label" data-card-attraction-label data-stat="attraction">Attraction</span>
-				<span class="ui-char-card-value" data-card-attraction data-stat="attraction">0</span>
-				<span class="ui-char-card-label" data-card-trust-label data-stat="trust">Trust</span>
-				<span class="ui-char-card-value" data-card-trust data-stat="trust">0</span>
-			</div>
-			<div class="ui-char-card-frame" aria-hidden="true"></div>
-			<div class="ui-char-card-band ui-char-card-band--name">
-				<span class="ui-char-card-name" data-card-name></span>
-			</div>
-			<div class="ui-char-card-band ui-char-card-band--subtitle">
-				<span class="ui-char-card-subtitle" data-card-subtitle></span>
+			<!-- The clip rounds the whole composition. Every art sheet is
+			     rectangular; this is what cuts their four corners. -->
+			<div class="ui-char-card-clip">
+				<img class="ui-char-card-bg" data-card-background alt=""/>
+				<div class="ui-char-card-bars" aria-hidden="true"></div>
+				<img class="ui-char-card-portrait" data-card-portrait alt=""/>
+				<div class="ui-char-card-stats">
+					<span class="ui-char-card-label" data-card-attraction-label data-stat="attraction">Attraction</span>
+					<span class="ui-char-card-value" data-card-attraction data-stat="attraction">0</span>
+					<span class="ui-char-card-label" data-card-trust-label data-stat="trust">Trust</span>
+					<span class="ui-char-card-value" data-card-trust data-stat="trust">0</span>
+				</div>
+				<div class="ui-char-card-frame" aria-hidden="true"></div>
+				<div class="ui-char-card-band ui-char-card-band--name">
+					<span class="ui-char-card-name" data-card-name></span>
+				</div>
+				<div class="ui-char-card-band ui-char-card-band--subtitle">
+					<span class="ui-char-card-subtitle" data-card-subtitle></span>
+				</div>
 			</div>
 		</article>
 	</template>

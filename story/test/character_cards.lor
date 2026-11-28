@@ -1,0 +1,12 @@
+import ../char_images
+import ../characters
+
+beat character_cards
+		addCard("mika")
+		addCard("l")
+		addCard("s")
+
+		Schau dir mal die Karten an.
+
+		Stimmts?
+

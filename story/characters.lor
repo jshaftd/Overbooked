@@ -7,18 +7,30 @@ character l
 	name: Livia
 	color: "#feecb2"
 	avatar:  assets/shared/avatars/livia.jpg
-	info: "Met at the supermarket"
+	characterCardBackground: assets/shared/character_card/background_village.webp
+	characterCardPortrait: assets/shared/character_card/livia.webp
+	info: Im Supermarkt getroffen
+	attraction: 0
+	trust: 0
+
+character s
+	name: Scarlett
+	color: "#fed8b2"
+	avatar:  assets/shared/avatars/scarlett.jpg
+	characterCardBackground: assets/shared/character_card/background_pool.webp
+	characterCardPortrait: assets/shared/character_card/scarlett.webp
+	info: Schwester von Livia
 	attraction: 0
 	trust: 0
 
 character mika
 	name: Mika
 	color: "#fa2c8d"
-	info: Teaches you stuff
+	characterCardBackground: assets/shared/character_card/background_classroom.webp
+	characterCardPortrait: assets/shared/character_card/mika.webp
+	info: Zeigt dir alles
 	attraction: 0
 	trust: 0
-	characterCardBackground: assets/gui/character_card_background_01.webp
-	characterCardPortrait: assets/gui/character_card_mika.webp
 
 character clerk
 	name: Empfangsmitarbeiter
