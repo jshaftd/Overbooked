@@ -848,8 +848,8 @@
 	position: absolute;
 	top: 56px;
 	right: 20px;
-	width: 72px;
-	height: 72px;
+	width: 80px;
+	height: 80px;
 	padding: 0;
 	display: none;
 	align-items: center;
@@ -883,8 +883,8 @@
 }
 
 .ui-card-button-icon {
-	width: 72px;
-	height:72px;
+	width: 80px;
+	height:80px;
 	/* The card icon is a full-colour illustration, not a mask: show it as drawn.
 	   Its A4 canvas has transparent top / bottom margins, so `cover` crops those
 	   and lets the deck itself fill the button. */
