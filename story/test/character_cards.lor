@@ -1,10 +1,20 @@
+import ../images
 import ../char_images
 import ../characters
 
 beat character_cards
+		+scene bg classroom
+
+		mika.attraction := 3
+		mika.trust := 7
+		l.attraction := 5
+		l.trust := 1
+		s.attraction := 11
+		s.trust := 0
+
 		addCard("mika")
-		addCard("l")
-		addCard("s")
+		// addCard("l")
+		// addCard("s")
 
 		Schau dir mal die Karten an.
 

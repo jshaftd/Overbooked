@@ -896,19 +896,71 @@
 	align-items: center;
 	justify-content: center;
 	gap: 12px;
-	padding: 12px;
+	/* The side padding reserves room for the end tilt: a 10deg card swings its
+	   corners past its layout box. With more than two cards the flex items
+	   shrink (see `.ui-char-card`), so three still fit inside that margin. */
+	padding: 12px 90px;
 	pointer-events: none;
 	z-index: 6;
 }
 
 .ui-char-card {
 	position: relative;
-	flex: none;
+	flex: 0 1 612px;
+	min-width: 0;
 	width: 612px;
 	max-width: 100%;
 	aspect-ratio: 612 / 960;
 	container-type: inline-size;
 	pointer-events: none;
+}
+
+/* The deck slides in from beyond the right edge and settles at a small random
+   tilt. DomUi sets three per-card properties: `--card-index` (the stagger
+   order), `--card-rotation` (the tilt, -10deg..10deg) and the screen's
+   `--card-enter-x` (the travel, at least one design width so every card starts
+   off-screen). The base transform is that off-screen start, so a card is never
+   painted at its final place for a frame before the animation; `.leaving`
+   plays the same path backwards for the close. */
+.ui-screen[data-screen="cards"] .ui-char-card {
+	transform: translateX(var(--card-enter-x, 2300px)) rotate(var(--card-rotation, 0deg));
+}
+
+.ui-screen[data-screen="cards"].active .ui-char-card {
+	animation: ui-card-in 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation-delay: calc(var(--card-index, 0) * 90ms);
+}
+
+/* Later in the sheet than the entry rule, so it wins while both classes are
+   present for the duration of the exit. */
+.ui-screen[data-screen="cards"].leaving .ui-char-card {
+	animation: ui-card-out 400ms cubic-bezier(0.55, 0, 0.85, 0.35) both;
+	animation-delay: calc(var(--card-index, 0) * 90ms);
+}
+
+@keyframes ui-card-in {
+	from {
+		transform: translateX(var(--card-enter-x, 2300px)) rotate(0deg);
+	}
+	to {
+		transform: translateX(0) rotate(var(--card-rotation, 0deg));
+	}
+}
+
+@keyframes ui-card-out {
+	from {
+		transform: translateX(0) rotate(var(--card-rotation, 0deg));
+	}
+	to {
+		transform: translateX(var(--card-enter-x, 2300px)) rotate(0deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.ui-screen[data-screen="cards"] .ui-char-card {
+		animation: none !important;
+		transform: rotate(var(--card-rotation, 0deg));
+	}
 }
 
 /* The art sheets are square, so the rounding lives on one wrapper: `overflow`
