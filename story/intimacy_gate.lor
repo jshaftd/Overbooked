@@ -1,0 +1,5 @@
+beat IntimacyGate(sceneAfterIntimacy)
+	choice
+		Mach weiter
+		Keine Details nötig (Szene überspringen)
+			-> beat(sceneAfterIntimacy)

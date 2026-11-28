@@ -29,11 +29,15 @@ character mika
 	characterCardBackground: assets/shared/character_card/background_classroom.webp
 	characterCardPortrait: assets/shared/character_card/mika.webp
 	info: Zeigt dir alles
-	attraction: 0
-	trust: 0
+	attraction: 1
+	trust: 1
+
+character pilot
+	name: Pilot
+	color: "#6c729b"
 
 character clerk
-	name: Empfangsmitarbeiter
+	name: Ramon
 	color: "#80cd77"
 
 character old_woman

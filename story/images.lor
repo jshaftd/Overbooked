@@ -1,9 +1,9 @@
 state
 	images:
 		bg:
-			classroom: assets/day00/bg/classroom01.jpg
+			classroom: assets/ch00/bg/classroom01.jpg
 			hotel_pool: assets/ch02/bg/hotel_pool.jpg
 		cg:
-			mika_bendover: assets/day00/cg/mika_in_classroom_bendover.jpg
-			mika_bendover_smile: assets/day00/cg/mika_in_classroom_bendover_smile.jpg
+			mika_bendover: assets/ch00/cg/mika_in_classroom_bendover.jpg
+			mika_bendover_smile: assets/ch00/cg/mika_in_classroom_bendover_smile.jpg
 		

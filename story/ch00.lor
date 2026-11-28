@@ -1,0 +1,282 @@
+import chapterTitleCard
+import char_images
+import characters
+import ch01
+
+beat ch00
+	Wie möchtest du starten?
+
+	choice
+		Bedienungshinweise und Einführung.
+			-> introduction(true)
+		
+		Nur Einführung.
+			-> introduction(false)
+		
+		Direkt ins Spiel
+			-> ch01
+
+beat introduction(showInstructions)
+	+scene bg black
+	Du hörst eine angenehme Stimme direkt vor dir.
+
+	Nur mühsam gelingt es dir, die Augen zu öffnen.
+
+	+scene bg "0xb0b0b2"
+
+	+show cg mika_bendover transform translate(0,-900)
+	+with longdissolve
+	+transform cg translate(0,900) over 4.0 ease quadinout
+	
+	mika.name := ???
+	
+	mika: Guten Morgen?
+	mika: Herzlich willkommen auch an alle die gerade aufgewacht sind.
+	
+	Eine Frau, die wie eine Lehrerin aussieht steht vor dir.
+
+	+transform cg translate(0,300) over 1.0 ease quadinout
+	+wait click
+
+	mika.name := Lehrerin
+	mika: Nicht ablenken lassen!
+
+	+transform cg translate(0,900) over 0.5 ease quadinout
+	
+	mika: Gut erkannt. Ja ich bin eine Lehrerin.
+	
+	+show cg mika_bendover_smile
+	
+	mika: Auch wenn ich keine dicke Brille trage.
+	
+	mika: Mein Name ist Mika.
+	mika.name := Mika
+
+	+show cg mika_bendover transform translate(0,900)
+
+	mika: Ich zeig dir sehr gerne mehr.
+
+	+transform cg translate(0,300) over 1.0 ease quadinout
+	+wait click
+
+	mika: Ich meinte natürlich, wie das Spiel funktioniert.
+	
+	+transform cg translate(0,900) over 0.5 ease quadinout
+	
+	+wait 0.5
+	+show cg mika_bendover_smile
+	
+	mika: Bereit?
+
+	+scene bg classroom
+	+show mika thinking
+	+with dissolve
+
+	mika: Also wo fangen wir an?
+	+show mika listen_up
+	if showInstructions
+		mika: Genau. Die allgemeine Steuerung.
+		instructions()
+	else
+		mika: Genau. Der Spielablauf.
+	
+	+show mika listen_up
+	mika: Durch Entscheidungen kannst du beeinflussen wie es weitergeht.
+	mika: Damit es interessanter wird, beeinflusst du dabei manchmal auch was die Charaktere für dich empfinden.
+	mika: Wir haben das auf zwei Gefühle reduziert um es übersichtlich zu halten.
+	+show mika thinking
+	mika: Vertrauen und Attraktion
+	+show mika waiting
+	mika: Durch mehr Vertrauen möchte die Person mehr Zeit mit dir verbringen und du kannst sie besser kennenlernen.
+	mika: Vertrauen baust du auf wenn du nett zu der Person bist.
+	mika: Vertrauen wird reduziert wenn Entscheidungen triffst die nicht nett sind.
+	mika: Oder auch wenn du sie anlügst und es kommt raus.
+
+	mika: Du wirst attraktiver in dem du Dinge tust, die mutig oder bewundernswert sind.
+	mika: Auch wenn du selbstbewusst wirkst oder auch ein bisschen frech bist.
+	mika: Du wirst weniger attraktiv wenn du respektlos, emotional unsicher wirkst oder nicht integer handelst.
+	mika: Das hört sich jetzt schwierig an. Aber keine Angst. Bleib einfach cool.
+	mika: Es wird angezeigt wenn sich Attraktion oder Vertrauen bei der Person verändern.
+	mika: Ausserdem gibt es die Charakter Karten, auf denen du die aktuellen Werte nachschauen kannst.
+	addCard("mika")
+	mika: In der Ecke rechts oben siehst du das Karten Symbol. Mit Klick darauf siehst du jetzt meine Karte.
+
+	mika: Ok, was haben die Werte Attraktion und Vertrauen für Auswirkungen?
+	mika: Ich zeichne das mal auf der Tafel auf, mit den englischen Begriffen: Attraction und Trust.
+	mika: Wenn wir das unterteilen erhalten wir 4 Quadranten.
+	mika: 1. Wenig Vertrauen und wenig Attraktion.
+	mika: Die Person wird wenig Interesse an dir haben. Wenn sie dir auch egal ist. Kein Problem.
+	
+	mika: 2. Viel Vertrauen aber wenig Attraktion.
+
+	mika: 3. Wenig Vertrauen, hohe Attraktion.
+
+	mika: Und schließlich das beste von allem.
+	mika: Viel Vertrauen und hohe Attraktion.
+
+	mika: Ich hab grad eine Idee...
+	mika: Wie wärs wenn wir diese Situationen gleich mal durchspielen.
+	mika: Hmm, ist das erlaubt?
+	mika: Keine Ahnung. Probieren wirs einfach. Kann ja nicht viel passieren.
+	mika: Macht bestimmt Spaß und die Unterschiede werden sofort deutlich.
+
+	choice
+		Ja cool.
+			-> roleplaying
+		Lieber nicht.
+			mika: Oh, möchtest du mich gleich wieder loswerden?
+			mika: Ich hätte gerne noch ein bisschen Zeit mit dir verbracht.
+			mika: Aber ok. Dann wünsche ich dir viel Spaß.
+			-> ch01
+
+
+beat instructions
+	+show mika neutral
+	mika: Weiter gehts mit Links-Klick, Leertaste oder Enter.
+	mika: Zum Menü gehts mit Rechts-Klick oder S.
+	mika: Rollback zurück mit dem Mausrad oder bild^
+	mika: Mit dem Hilfe Button im Menü kannst du nochmal alles Tastatur und Maus Kommandos nachschauen.
+
+beat roleplaying
+	mika: Sehr schön.
+	mika: Das erste Quadrat können wir auslassen. Das ist langweilig.
+	mika: Mit was möchtest du anfangen?
+	mika: Das Spiel wird automatisch die Wert für mich setzen so dass ich ganz intuitiv reagiere.
+
+	choice
+		Viel Vertrauen, niedrige Attraktion
+			mika: Gute Wahl! Das kann sich sehr unangenehm anfühlen.
+			mika: Deshalb bringen wir es am besten gleich hinter uns.
+			mika: Sagen wir du bist ein Kollege von mir und du siehst mich nach dem Unterricht zufällig im Klassenzimmer.
+			high_trust_low_attraction()
+			mika: Nun aber zum nächsten Quadrat.
+			mika: Das scheint auf den ersten Blick die bessere Kombination zu sein.
+			mika: Hat aber auch seine Tücken.
+			mika: Die gleiche Szene. Nachmittag. Wir treffen uns im Klassenzimmer.
+			low_trust_high_attraction()
+		
+		Wenig Vertrauen, hohe Attraktion
+			mika: Genau, das scheint die bessere Kombination zu sein.
+			mika: Aber hat auch seine Tücken.
+			mika: Sagen wir du bist ein Kollege von mir und du siehst mich nach dem Unterricht zufällig im Klassenzimmer.
+			low_trust_high_attraction()
+			mika: Nun aber zum nächsten Quadrat.
+			mika: Das kann sich sehr unangenehm anfühlen. Ist aber wichtig es zu kennen.
+			mika: Die gleiche Szene. Nachmittag. Wir treffen uns im Klassenzimmer.
+			high_trust_low_attraction()
+	
+	-> high_trust_high_attraction
+	
+beat high_trust_low_attraction
+	mika: Wir sind gute Freunde aber du möchtest, dass mehr daraus wird.
+	mika.trust += 7
+	+notify mika trust 7
+	
+	mika: Du kommst zu mir rein.
+	
+	choice
+		Sag ihr was du für sie empfindest
+			mika: Danke. Das war mutig von dir, mir das zu sagen.
+		
+		Frag nach einem Date
+			mika: Danke. Aber ein Date ist glaube ich keine gute Idee.
+		
+		Gestehe eine erotische Fantasie mit ihr
+			mika: Oh. Das ist jetzt etwas unerwartet.
+
+	mika: Ich hatte ja keine Ahnung dass du so fühlst.
+	mika: Du bist einer meiner besten Freunde.
+	mika: Und ich möchte unsere Freundschaft nicht durch eine Beziehung in Gefahr bringen.
+	mika: Du verstehst das sicher. Ich fühle einfach nicht so.
+	mika: Jede Frau könnte sich glücklich schätzen jemand wie dich zu finden.
+	mika: Ich müsste schon auch mal wieder ordentlich durchgescrollt werden.
+	mika: Aber du bist mir viel zu schade für sowas.
+	mika: Du bist der Beste.
+	mika: Übrigends, hast du morgen Abend zufällig Zeit auf meinen Hund aufzupassen.
+	mika: Ich gehe mit den Mädels zum Clubbing und es könnte spät werden.
+
+	mika.trust -= 7
+	mika: Und so weiter.
+	mika: Du merkst schon in welche Richtung es geht.
+
+beat low_trust_high_attraction
+	mika: Wir kennen uns noch nicht so gut. Aber ich finde dich unglaublich attraktiv.
+	mika.attraction += 7
+	+notify mika attraction 7
+
+	mika: Oh es ist auf einmal so warm hier.
+
+	choice
+		Grüße freundlich
+			mika: ...
+			mika: Oh, äh.... auh gutn Tah.
+			
+		Gib ihr ein Kompliment
+			mika: ...
+			mika: Was?...
+			mika: Nein...
+			mika: Äh... danke.
+			
+		Sag ihr dass du sie privat treffen möchtest
+			mika: Oh...
+			mika: Was? Mit mir? Nein.
+			mike: Ich meine...
+
+	mika: Jetzt werde ich auch noch rot.
+	mika: AAAAhhh. Hab ich das jetzt laut gesagt?
+	mika: Oh nein.
+	mika: Ich muss weg.
+
+	mika.trust -= 7
+	mika: Ich glaube es wird deutlich was das Problem ist.
+	mika: Sie ist emotional überwältigt.
+	mika: Hat Angst die Kontrolle zu verlieren.
+	mika: Falls ihr versehentlich doch im Bett landet wird sie sich später schlecht fühlen.
+	mika: Und den Kontakt möglicherweise ganz abbrechen.
+
+beat high_trust_high_attraction
+	mika: Das Beste zum Schluss.
+	mika: Sie hat viel Vertrauen und fühlt eine starke Anziehung.
+	mika: Wieder eine ähnliche Situation.
+	mika: Wie hoch sollen meine Werte gesetzt werden?
+	
+	choice
+		Beides ein bisschen höher
+			mika: Nicht so bescheiden. Ein bisschen mehr geht schon.
+			mika: Ups, jetzt ist mir der Hebel verrutscht.
+		
+		So mittelmäßig viel
+			mika: Nicht so bescheiden. Ein bisschen mehr geht schon.
+			mika: Ups, jetzt ist mir der Hebel verrutscht.
+		
+		Beides hoch bis an den Anschlag.
+			mika: NEIN, das ist doch viel zu viel auf einmal!
+
+	mika.trust += 9
+	mika.attraction += 9
+	+notify mika trust 9
+	+notify mika attraction 9
+
+	mika: Oooooh. Ich fühle mich auf einmal so...
+	mika: Guuuuuut.
+
+	choice
+		Sag nichts
+		
+		Lächle sie an
+			
+		Blinzel ihr zu
+			
+	mika: Du kommst mir genau richtig.
+	mika: Komm her und zieh mich aus!
+
+	IntimacyGate(introduction_end)
+
+	Wilder Sex im Klassenzimmer.
+	
+	-> introduction_end
+
+beat introduction_end
+	mika:Tut mir leid. Das war jetzt sehr unprofessionell von mir.
+	-> ch01
+

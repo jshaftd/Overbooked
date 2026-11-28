@@ -1,5 +1,2 @@
-// import day00
-// -> day00
-
-import test/character_cards
--> character_cards
+import ch00
+-> ch00

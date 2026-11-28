@@ -1,12 +1,12 @@
 import chapterTitleCard
 import char_images
 import characters
-import day02
+import ch02
 import images
 import state
 
-beat day01
-	ChapterTitleCard("Tag 1", "Ankunft")
+beat ch01
+	ChapterTitleCard("Kapitel 1", "Ankunft")
 
 	-> arrival
 
@@ -30,8 +30,8 @@ beat arrival
 	Daneben eine Bar und ein Restaurant.
 
 	Neben dem Eingang die Rezeption.
-
-	clerk: Herzliche willkomen bei La Casa Azul!
+	clerk.name := Empfangsmitarbeiter
+	clerk: Herzliche willkomen im White Sands Resort!
 	clerk: Mein Name ist Ramon.
 	clerk.name := Ramon
 	clerk: Wie ist ihr Name?
@@ -58,9 +58,9 @@ beat arrival
 
 	So jetzt erst mal was einkaufen.
 
-	-> day1_pool
+	-> ch01_pool
 
-beat day1_pool
+beat ch01_pool
 	Auf dem Weg am Pool schaust du dir die anderen Gäste genauer an.
 
 	p: (Hmm, ist echt nicht meine Altersklasse)
@@ -172,5 +172,5 @@ beat tired
 
 	Es war ein langer Reisetag und der Urlaub geht ja erst los.
 
-	-> day02
+	-> ch02
 

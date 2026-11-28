@@ -1,7 +1,7 @@
 state
 	character_images:
 		mika:
-			listen_up: assets/day00/sprites/mika/mika_listen_up.webp
-			neutral: assets/day00/sprites/mika/mika_neutral.webp
-			thinking: assets/day00/sprites/mika/mika_thinking.webp
-			waiting: assets/day00/sprites/mika/mika_waiting.webp
+			listen_up: assets/ch00/sprites/mika/mika_listen_up.webp
+			neutral: assets/ch00/sprites/mika/mika_neutral.webp
+			thinking: assets/ch00/sprites/mika/mika_thinking.webp
+			waiting: assets/ch00/sprites/mika/mika_waiting.webp
