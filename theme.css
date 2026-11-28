@@ -848,21 +848,22 @@
 	position: absolute;
 	top: 56px;
 	right: 20px;
-	width: 64px;
-	height: 64px;
+	width: 72px;
+	height: 72px;
 	padding: 0;
 	display: none;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid rgba(255, 255, 255, 0.18);
-	border-radius: 16px;
-	background: rgba(16, 16, 26, 0.55);
-	box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
-	color: #f0f0ff;
+	/* Drop the native button chrome (its default `buttonface` background and
+	   outset border) so only the drawn icon is left. */
+	-webkit-appearance: none;
+	appearance: none;
+	background: none;
+	border: 0;
 	cursor: pointer;
 	pointer-events: auto;
 	z-index: 6;
-	transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+	opacity: 0.6;
 }
 
 .ui-card-button.visible {
@@ -871,10 +872,10 @@
 
 .ui-card-button:hover,
 .ui-card-button:focus-visible {
-	background: rgba(30, 30, 46, 0.82);
-	border-color: rgba(251, 147, 215, 0.75);
-	color: #ffffff;
-	outline: none;
+	/* background: rgba(30, 30, 46, 0.82); */
+	/* border-color: rgba(251, 147, 215, 0.75); */
+	/* color: #ffffff; */
+	/* outline: none; */
 }
 
 .ui-card-button:active {
@@ -882,11 +883,12 @@
 }
 
 .ui-card-button-icon {
-	width: 40px;
-	height: 40px;
-	background-color: currentColor;
-	-webkit-mask: url("assets/shared/icons/cards.svg") center / contain no-repeat;
-	mask: url("assets/shared/icons/cards.svg") center / contain no-repeat;
+	width: 72px;
+	height:72px;
+	/* The card icon is a full-colour illustration, not a mask: show it as drawn.
+	   Its A4 canvas has transparent top / bottom margins, so `cover` crops those
+	   and lets the deck itself fill the button. */
+	background: url("assets/shared/icons/cards.svg") center / cover no-repeat;
 }
 
 .ui-char-cards {
